@@ -1,0 +1,74 @@
+#
+#  This file is part of the Jikes RVM project (http://jikesrvm.org).
+#
+#  This file is licensed to You under the Common Public License (CPL);
+#  You may not use this file except in compliance with the License. You
+#  may obtain a copy of the License at
+#
+#      http://www.opensource.org/licenses/cpl1.0.php
+#
+#  See the COPYRIGHT.txt file distributed with this work for information
+#  regarding copyright ownership.
+#
+
+[Lorg/vmmagic/unboxed/Address;
+[Lorg/vmmagic/unboxed/ObjectReference;
+[Lorg/vmmagic/unboxed/Word;
+[Lorg/vmmagic/unboxed/Offset;
+[Lorg/vmmagic/unboxed/Extent;
+[Lorg/vmmagic/unboxed/AddressArray;
+[Lorg/vmmagic/unboxed/ObjectReferenceArray;
+
+[Lorg/jikesrvm/VM_CodeArray;
+[Lorg/jikesrvm/ArchitectureSpecific$VM_CodeArray;
+[Lorg/jikesrvm/SubordinateArchitecture$VM_CodeArray;
+
+[Lorg/jikesrvm/VM_CommandLineArgs$Prefix;
+
+[Lorg/jikesrvm/classloader/VM_Class;
+[Lorg/jikesrvm/classloader/VM_InterfaceMethodSignature;
+[Lorg/jikesrvm/classloader/VM_Annotation;
+[Lorg/jikesrvm/classloader/VM_Annotation$AnnotationMember;
+[Lorg/jikesrvm/classloader/VM_Atom;
+[Lorg/jikesrvm/classloader/VM_Field;
+[Lorg/jikesrvm/classloader/VM_Method;
+[Lorg/jikesrvm/classloader/VM_MemberReference;
+[Lorg/jikesrvm/classloader/VM_Type;
+[Lorg/jikesrvm/classloader/VM_TypeReference;
+[Lorg/jikesrvm/classloader/VM_InterfaceInvocation$IMTDict$Link;
+[Lorg/jikesrvm/classloader/VM_SpecializedMethod;
+
+[Lorg/jikesrvm/compilers/baseline/VM_BasicBlock;
+[Lorg/jikesrvm/compilers/baseline/VM_UnusualMaps;
+[Lorg/jikesrvm/compilers/common/VM_CompiledMethod;
+
+[Lorg/jikesrvm/runtime/VM_DynamicLibrary;
+
+[Lorg/jikesrvm/scheduler/VM_Processor;
+[Lorg/jikesrvm/scheduler/VM_Thread;
+[Lorg/jikesrvm/scheduler/VM_Lock;
+[[Lorg/jikesrvm/scheduler/VM_Lock;
+[Lorg/jikesrvm/scheduler/greenthreads/VM_GreenProcessor;
+[Lorg/jikesrvm/scheduler/greenthreads/VM_GreenThread;
+[Lorg/jikesrvm/scheduler/greenthreads/VM_GreenLock;
+[Lorg/jikesrvm/scheduler/VM_Scheduler$ThreadModel;
+
+[Lorg/jikesrvm/util/VM_HashMap$Bucket;
+[Lorg/jikesrvm/util/VM_HashSet$Bucket;
+
+[Lorg/jikesrvm/memorymanagers/mminterface/VM_CollectorThread;
+[Lorg/jikesrvm/memorymanagers/mminterface/VM_ConcurrentCollectorThread;
+[Lorg/jikesrvm/memorymanagers/mminterface/Selected$Collector;
+[Lorg/jikesrvm/memorymanagers/mminterface/Selected$Mutator;
+
+[Lorg/jikesrvm/mm/mmtk/SynchronizedCounter;
+
+[Lorg/mmtk/plan/Phase;
+[Lorg/mmtk/policy/Space;
+[Lorg/mmtk/utility/statistics/Stats;
+[Lorg/mmtk/utility/statistics/Stats$Phase;
+[Lorg/mmtk/utility/statistics/Counter;
+[Lorg/mmtk/utility/statistics/Timer;
+[Lorg/mmtk/utility/options/Option;
+
+Lsun/misc/Unsafe;

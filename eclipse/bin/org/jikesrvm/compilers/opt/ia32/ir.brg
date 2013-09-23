@@ -1,0 +1,3133 @@
+%{
+/*
+ *  This file is part of the Jikes RVM project (http://jikesrvm.org).
+ *
+ *  This file is licensed to You under the Common Public License (CPL);
+ *  You may not use this file except in compliance with the License. You
+ *  may obtain a copy of the License at
+ *
+ *      http://www.opensource.org/licenses/cpl1.0.php
+ *
+ *  See the COPYRIGHT.txt file distributed with this work for information
+ *  regarding copyright ownership.
+ */
+//ir.brg
+
+/**
+ * Generate from ir.template and assembled rules files.
+ */
+%}
+%term GET_CLASS_OBJECT = 0
+%term GET_CAUGHT_EXCEPTION = 1
+%term SET_CAUGHT_EXCEPTION = 2
+%term NEW = 3
+%term NEW_UNRESOLVED = 4
+%term NEWARRAY = 5
+%term NEWARRAY_UNRESOLVED = 6
+%term ATHROW = 7
+%term CHECKCAST = 8
+%term CHECKCAST_NOTNULL = 9
+%term CHECKCAST_UNRESOLVED = 10
+%term MUST_IMPLEMENT_INTERFACE = 11
+%term INSTANCEOF = 12
+%term INSTANCEOF_NOTNULL = 13
+%term INSTANCEOF_UNRESOLVED = 14
+%term MONITORENTER = 15
+%term MONITOREXIT = 16
+%term NEWOBJMULTIARRAY = 17
+%term GETSTATIC = 18
+%term PUTSTATIC = 19
+%term GETFIELD = 20
+%term PUTFIELD = 21
+%term INT_ZERO_CHECK = 22
+%term LONG_ZERO_CHECK = 23
+%term BOUNDS_CHECK = 24
+%term OBJARRAY_STORE_CHECK = 25
+%term OBJARRAY_STORE_CHECK_NOTNULL = 26
+%term IG_PATCH_POINT = 27
+%term IG_CLASS_TEST = 28
+%term IG_METHOD_TEST = 29
+%term TABLESWITCH = 30
+%term LOOKUPSWITCH = 31
+%term INT_ALOAD = 32
+%term LONG_ALOAD = 33
+%term FLOAT_ALOAD = 34
+%term DOUBLE_ALOAD = 35
+%term REF_ALOAD = 36
+%term UBYTE_ALOAD = 37
+%term BYTE_ALOAD = 38
+%term USHORT_ALOAD = 39
+%term SHORT_ALOAD = 40
+%term INT_ASTORE = 41
+%term LONG_ASTORE = 42
+%term FLOAT_ASTORE = 43
+%term DOUBLE_ASTORE = 44
+%term REF_ASTORE = 45
+%term BYTE_ASTORE = 46
+%term SHORT_ASTORE = 47
+%term INT_IFCMP = 48
+%term INT_IFCMP2 = 49
+%term LONG_IFCMP = 50
+%term FLOAT_IFCMP = 51
+%term DOUBLE_IFCMP = 52
+%term REF_IFCMP = 53
+%term LABEL = 54
+%term BBEND = 55
+%term UNINT_BEGIN = 56
+%term UNINT_END = 57
+%term READ_CEILING = 58
+%term WRITE_FLOOR = 59
+%term PHI = 60
+%term SPLIT = 61
+%term PI = 62
+%term NOP = 63
+%term INT_MOVE = 64
+%term LONG_MOVE = 65
+%term FLOAT_MOVE = 66
+%term DOUBLE_MOVE = 67
+%term REF_MOVE = 68
+%term GUARD_MOVE = 69
+%term INT_COND_MOVE = 70
+%term LONG_COND_MOVE = 71
+%term FLOAT_COND_MOVE = 72
+%term DOUBLE_COND_MOVE = 73
+%term REF_COND_MOVE = 74
+%term GUARD_COND_MOVE = 75
+%term GUARD_COMBINE = 76
+%term REF_ADD = 77
+%term INT_ADD = 78
+%term LONG_ADD = 79
+%term FLOAT_ADD = 80
+%term DOUBLE_ADD = 81
+%term REF_SUB = 82
+%term INT_SUB = 83
+%term LONG_SUB = 84
+%term FLOAT_SUB = 85
+%term DOUBLE_SUB = 86
+%term INT_MUL = 87
+%term LONG_MUL = 88
+%term FLOAT_MUL = 89
+%term DOUBLE_MUL = 90
+%term INT_DIV = 91
+%term LONG_DIV = 92
+%term FLOAT_DIV = 93
+%term DOUBLE_DIV = 94
+%term INT_REM = 95
+%term LONG_REM = 96
+%term FLOAT_REM = 97
+%term DOUBLE_REM = 98
+%term REF_NEG = 99
+%term INT_NEG = 100
+%term LONG_NEG = 101
+%term FLOAT_NEG = 102
+%term DOUBLE_NEG = 103
+%term REF_SHL = 104
+%term INT_SHL = 105
+%term LONG_SHL = 106
+%term REF_SHR = 107
+%term INT_SHR = 108
+%term LONG_SHR = 109
+%term REF_USHR = 110
+%term INT_USHR = 111
+%term LONG_USHR = 112
+%term REF_AND = 113
+%term INT_AND = 114
+%term LONG_AND = 115
+%term REF_OR = 116
+%term INT_OR = 117
+%term LONG_OR = 118
+%term REF_XOR = 119
+%term INT_XOR = 120
+%term REF_NOT = 121
+%term INT_NOT = 122
+%term LONG_NOT = 123
+%term LONG_XOR = 124
+%term INT_2ADDRSigExt = 125
+%term INT_2ADDRZerExt = 126
+%term LONG_2ADDR = 127
+%term ADDR_2INT = 128
+%term ADDR_2LONG = 129
+%term INT_2LONG = 130
+%term INT_2FLOAT = 131
+%term INT_2DOUBLE = 132
+%term LONG_2INT = 133
+%term LONG_2FLOAT = 134
+%term LONG_2DOUBLE = 135
+%term FLOAT_2INT = 136
+%term FLOAT_2LONG = 137
+%term FLOAT_2DOUBLE = 138
+%term DOUBLE_2INT = 139
+%term DOUBLE_2LONG = 140
+%term DOUBLE_2FLOAT = 141
+%term INT_2BYTE = 142
+%term INT_2USHORT = 143
+%term INT_2SHORT = 144
+%term LONG_CMP = 145
+%term FLOAT_CMPL = 146
+%term FLOAT_CMPG = 147
+%term DOUBLE_CMPL = 148
+%term DOUBLE_CMPG = 149
+%term RETURN = 150
+%term NULL_CHECK = 151
+%term GOTO = 152
+%term BOOLEAN_NOT = 153
+%term BOOLEAN_CMP_INT = 154
+%term BOOLEAN_CMP_ADDR = 155
+%term BOOLEAN_CMP_LONG = 156
+%term BOOLEAN_CMP_FLOAT = 157
+%term BOOLEAN_CMP_DOUBLE = 158
+%term BYTE_LOAD = 159
+%term UBYTE_LOAD = 160
+%term SHORT_LOAD = 161
+%term USHORT_LOAD = 162
+%term REF_LOAD = 163
+%term REF_STORE = 164
+%term INT_LOAD = 165
+%term LONG_LOAD = 166
+%term FLOAT_LOAD = 167
+%term DOUBLE_LOAD = 168
+%term BYTE_STORE = 169
+%term SHORT_STORE = 170
+%term INT_STORE = 171
+%term LONG_STORE = 172
+%term FLOAT_STORE = 173
+%term DOUBLE_STORE = 174
+%term PREPARE_INT = 175
+%term PREPARE_ADDR = 176
+%term PREPARE_LONG = 177
+%term ATTEMPT_INT = 178
+%term ATTEMPT_ADDR = 179
+%term ATTEMPT_LONG = 180
+%term CALL = 181
+%term SYSCALL = 182
+%term YIELDPOINT_PROLOGUE = 183
+%term YIELDPOINT_EPILOGUE = 184
+%term YIELDPOINT_BACKEDGE = 185
+%term YIELDPOINT_OSR = 186
+%term OSR_BARRIER = 187
+%term IR_PROLOGUE = 188
+%term RESOLVE = 189
+%term RESOLVE_MEMBER = 190
+%term GET_TIME_BASE = 191
+%term INSTRUMENTED_EVENT_COUNTER = 192
+%term TRAP_IF = 193
+%term TRAP = 194
+%term FLOAT_AS_INT_BITS = 195
+%term INT_BITS_AS_FLOAT = 196
+%term DOUBLE_AS_LONG_BITS = 197
+%term LONG_BITS_AS_DOUBLE = 198
+%term ARRAYLENGTH = 199
+%term GET_OBJ_TIB = 200
+%term GET_CLASS_TIB = 201
+%term GET_TYPE_FROM_TIB = 202
+%term GET_SUPERCLASS_IDS_FROM_TIB = 203
+%term GET_DOES_IMPLEMENT_FROM_TIB = 204
+%term GET_ARRAY_ELEMENT_TIB_FROM_TIB = 205
+%term LOWTABLESWITCH = 206
+%term ADDRESS_CONSTANT = 207
+%term INT_CONSTANT = 208
+%term LONG_CONSTANT = 209
+%term REGISTER = 210
+%term OTHER_OPERAND = 211
+%term NULL = 212
+%term BRANCH_TARGET = 213
+%term MATERIALIZE_FP_CONSTANT = 214
+%term GET_JTOC = 215
+%term GET_CURRENT_PROCESSOR = 216
+%term ROUND_TO_ZERO = 217
+%term CLEAR_FLOATING_POINT_STATE = 218
+%term PREFETCH = 219
+%term PAUSE = 220
+%term FP_ADD = 221
+%term FP_SUB = 222
+%term FP_MUL = 223
+%term FP_DIV = 224
+%term FP_NEG = 225
+%term FP_REM = 226
+%term INT_2FP = 227
+%term LONG_2FP = 228
+%term CMP_CMOV = 229
+%term FCMP_CMOV = 230
+%term LCMP_CMOV = 231
+%term CMP_FCMOV = 232
+%term FCMP_FCMOV = 233
+%term CALL_SAVE_VOLATILE = 234
+%term MIR_START = 235
+%term REQUIRE_ESP = 236
+%term ADVISE_ESP = 237
+%term MIR_LOWTABLESWITCH = 238
+%term IA32_FCLEAR = 239
+%term DUMMY_DEF = 240
+%term DUMMY_USE = 241
+%term IA32_FMOV_ENDING_LIVE_RANGE = 242
+%term IA32_FMOV = 243
+%term IA32_TRAPIF = 244
+%term IA32_OFFSET = 245
+%term IA32_LOCK_CMPXCHG = 246
+%term IA32_LOCK_CMPXCHG8B = 247
+%term IA32_ADC = 248
+%term IA32_ADD = 249
+%term IA32_AND = 250
+%term IA32_BSWAP = 251
+%term IA32_BT = 252
+%term IA32_BTC = 253
+%term IA32_BTR = 254
+%term IA32_BTS = 255
+%term IA32_SYSCALL = 256
+%term IA32_CALL = 257
+%term IA32_CDQ = 258
+%term IA32_CMOV = 259
+%term IA32_CMP = 260
+%term IA32_CMPXCHG = 261
+%term IA32_CMPXCHG8B = 262
+%term IA32_DEC = 263
+%term IA32_DIV = 264
+%term IA32_FADD = 265
+%term IA32_FADDP = 266
+%term IA32_FCHS = 267
+%term IA32_FCMOV = 268
+%term IA32_FCOMI = 269
+%term IA32_FCOMIP = 270
+%term IA32_FDIV = 271
+%term IA32_FDIVP = 272
+%term IA32_FDIVR = 273
+%term IA32_FDIVRP = 274
+%term IA32_FEXAM = 275
+%term IA32_FXCH = 276
+%term IA32_FFREE = 277
+%term IA32_FIADD = 278
+%term IA32_FIDIV = 279
+%term IA32_FIDIVR = 280
+%term IA32_FILD = 281
+%term IA32_FIMUL = 282
+%term IA32_FINIT = 283
+%term IA32_FIST = 284
+%term IA32_FISTP = 285
+%term IA32_FISUB = 286
+%term IA32_FISUBR = 287
+%term IA32_FLD = 288
+%term IA32_FLDCW = 289
+%term IA32_FLD1 = 290
+%term IA32_FLDL2T = 291
+%term IA32_FLDL2E = 292
+%term IA32_FLDPI = 293
+%term IA32_FLDLG2 = 294
+%term IA32_FLDLN2 = 295
+%term IA32_FLDZ = 296
+%term IA32_FMUL = 297
+%term IA32_FMULP = 298
+%term IA32_FNSTCW = 299
+%term IA32_FNINIT = 300
+%term IA32_FNSAVE = 301
+%term IA32_FPREM = 302
+%term IA32_FRSTOR = 303
+%term IA32_FST = 304
+%term IA32_FSTCW = 305
+%term IA32_FSTP = 306
+%term IA32_FSUB = 307
+%term IA32_FSUBP = 308
+%term IA32_FSUBR = 309
+%term IA32_FSUBRP = 310
+%term IA32_FUCOMI = 311
+%term IA32_FUCOMIP = 312
+%term IA32_IDIV = 313
+%term IA32_IMUL1 = 314
+%term IA32_IMUL2 = 315
+%term IA32_INC = 316
+%term IA32_INT = 317
+%term IA32_JCC = 318
+%term IA32_JCC2 = 319
+%term IA32_JMP = 320
+%term IA32_LEA = 321
+%term IA32_LOCK = 322
+%term IA32_MOV = 323
+%term IA32_MOVZX__B = 324
+%term IA32_MOVSX__B = 325
+%term IA32_MOVZX__W = 326
+%term IA32_MOVSX__W = 327
+%term IA32_MUL = 328
+%term IA32_NEG = 329
+%term IA32_NOT = 330
+%term IA32_OR = 331
+%term IA32_PAUSE = 332
+%term IA32_PREFETCHNTA = 333
+%term IA32_POP = 334
+%term IA32_PUSH = 335
+%term IA32_RCL = 336
+%term IA32_RCR = 337
+%term IA32_ROL = 338
+%term IA32_ROR = 339
+%term IA32_RET = 340
+%term IA32_SAL = 341
+%term IA32_SAR = 342
+%term IA32_SHL = 343
+%term IA32_SHR = 344
+%term IA32_SBB = 345
+%term IA32_SET__B = 346
+%term IA32_SHLD = 347
+%term IA32_SHRD = 348
+%term IA32_SUB = 349
+%term IA32_TEST = 350
+%term IA32_XOR = 351
+%term IA32_RDTSC = 352
+%term IA32_ADDSS = 353
+%term IA32_SUBSS = 354
+%term IA32_MULSS = 355
+%term IA32_DIVSS = 356
+%term IA32_ADDSD = 357
+%term IA32_SUBSD = 358
+%term IA32_MULSD = 359
+%term IA32_DIVSD = 360
+%term IA32_XORPS = 361
+%term IA32_XORPD = 362
+%term IA32_UCOMISS = 363
+%term IA32_UCOMISD = 364
+%term IA32_CMPEQSS = 365
+%term IA32_CMPLTSS = 366
+%term IA32_CMPLESS = 367
+%term IA32_CMPUNORDSS = 368
+%term IA32_CMPNESS = 369
+%term IA32_CMPNLTSS = 370
+%term IA32_CMPNLESS = 371
+%term IA32_CMPORDSS = 372
+%term IA32_CMPEQSD = 373
+%term IA32_CMPLTSD = 374
+%term IA32_CMPLESD = 375
+%term IA32_CMPUNORDSD = 376
+%term IA32_CMPNESD = 377
+%term IA32_CMPNLTSD = 378
+%term IA32_CMPNLESD = 379
+%term IA32_CMPORDSD = 380
+%term IA32_MOVSS = 381
+%term IA32_MOVSD = 382
+%term IA32_MOVD = 383
+%term IA32_MOVQ = 384
+%term IA32_CVTSI2SS = 385
+%term IA32_CVTSS2SD = 386
+%term IA32_CVTSS2SI = 387
+%term IA32_CVTTSS2SI = 388
+%term IA32_CVTSI2SD = 389
+%term IA32_CVTSD2SS = 390
+%term IA32_CVTSD2SI = 391
+%term IA32_CVTTSD2SI = 392
+%term MIR_END = 393
+%%
+stm:	r		"" 0
+r:	REGISTER		"" 0
+r:	czr		"" 0
+cz:	czr		"" 0
+r:	szpr		"" 0
+szp:	szpr		"" 0
+riv:	r		"" 0
+riv:	INT_CONSTANT		"" 0
+rlv:	r		"" 0
+rlv:	LONG_CONSTANT		"" 0
+any:	NULL		"" 0
+any:	riv		"" 0
+any:	ADDRESS_CONSTANT		"" 0
+any:	LONG_CONSTANT		"" 0
+any:	OTHER_OPERAND(any, any)		"" 0
+sload8:	BYTE_LOAD(riv, riv)		"" 0
+sload8:	BYTE_ALOAD(riv, riv)		"" 0
+uload8:	UBYTE_LOAD(riv, riv)		"" 0
+uload8:	UBYTE_ALOAD(riv, riv)		"" 0
+load8:	sload8		"" 0
+load8:	uload8		"" 0
+sload16: SHORT_LOAD(riv, riv)		"" 0
+sload16: SHORT_ALOAD(riv, riv)		"" 0
+uload16: USHORT_LOAD(riv, riv)		"" 0
+uload16: USHORT_ALOAD(riv, riv)		"" 0
+load16:	sload16		"" 0
+load16:	uload16		"" 0
+load32:	INT_LOAD(riv, riv)		"" 0
+load32:	INT_ALOAD(riv, riv)		"" 0
+load16_32:      load16		"" 0
+load16_32:      load32		"" 0
+load8_16_32:	load16_32		"" 0
+load8_16_32:	load8		"" 0
+load64:	LONG_LOAD(riv, riv)		"" 0
+load64:	LONG_ALOAD(riv, riv)		"" 0
+address1scaledreg:	address1reg		"" 0
+address:	address1scaledreg		"" 0
+address1scaledreg:	INT_SHL(r, INT_CONSTANT)		"" LEA_SHIFT(Binary.getVal2(P(p)), 0)
+address1reg:	INT_ADD(r, INT_CONSTANT)		"" 0
+address1reg:	INT_MOVE(r)		"" 0
+address:	INT_ADD(r, r)		"" 0
+address1reg:	INT_ADD(address1reg, INT_CONSTANT)		"" 0
+address1scaledreg:	INT_ADD(address1scaledreg, INT_CONSTANT)		"" 0
+address:	INT_ADD(r, address1scaledreg)		"" 0
+address:	INT_ADD(address1scaledreg, r)		"" 0
+address:	INT_ADD(address1scaledreg, INT_CONSTANT)		"" 0
+address:	INT_ADD(address1scaledreg, address1reg)		"" 0
+address:	INT_ADD(address1reg, address1scaledreg)		"" 0
+r:	INT_ADD(address1scaledreg, r)		"" 11
+r:	INT_ADD(r, address1scaledreg)		"" 11
+r:	INT_ADD(address1scaledreg, address1reg)		"" 11
+r:	INT_ADD(address1reg, address1scaledreg)		"" 11
+r:	INT_ADD(address, INT_CONSTANT)		"" 11
+r:	INT_MOVE(address)		"" 20
+stm:	IG_PATCH_POINT		"" 10
+stm:	UNINT_BEGIN		"" 10
+stm:	UNINT_END		"" 10
+stm:	YIELDPOINT_PROLOGUE		"" 10
+stm:	YIELDPOINT_EPILOGUE		"" 10
+stm:	YIELDPOINT_BACKEDGE		"" 10
+stm:	LOWTABLESWITCH(r)		"" 10
+stm:	RESOLVE		"" 10
+stm:	NOP		"" 10
+r:	GUARD_MOVE		"" 11
+r:	GUARD_COMBINE		"" 11
+stm:	NULL_CHECK(riv)		"" 11
+stm:	IR_PROLOGUE		"" 11
+r:	GET_CAUGHT_EXCEPTION		"" 11
+stm:	SET_CAUGHT_EXCEPTION(r)		"" 11
+stm:	TRAP		"" 10
+stm:	TRAP_IF(r, INT_CONSTANT)		"" 10
+stm:	TRAP_IF(r, LONG_CONSTANT)		"" 10
+stm:	TRAP_IF(r, r)		"" 10
+stm:	TRAP_IF(load32, riv)		"" 15
+stm:	TRAP_IF(riv, load32)		"" 15
+r:	BOOLEAN_NOT(r)		"" 13
+stm:	BYTE_STORE(BOOLEAN_NOT(UBYTE_LOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	BYTE_ASTORE(BOOLEAN_NOT(UBYTE_ALOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLL(p), 17)
+r:	BOOLEAN_CMP_INT(r,riv)		"" 39
+boolcmp: BOOLEAN_CMP_INT(r,riv)		"" 13
+r:	BOOLEAN_CMP_INT(r,INT_CONSTANT)		"" (VR(p) == 0 && EQ_NE(BooleanCmp.getCond(P(p)))?37:INFINITE)
+boolcmp: BOOLEAN_CMP_INT(r,INT_CONSTANT)		"" (VR(p) == 0 && EQ_NE(BooleanCmp.getCond(P(p)))?11:INFINITE)
+r:	BOOLEAN_CMP_INT(r,INT_CONSTANT)		"" (VR(p) == 0 && BooleanCmp.getCond(P(p)).isLESS() ? 11 : INFINITE)
+r:	BOOLEAN_CMP_INT(load32,INT_CONSTANT)		"" (VR(p) == 0 && BooleanCmp.getCond(P(p)).isLESS() ? 16 : INFINITE)
+r:	BOOLEAN_CMP_INT(r,INT_CONSTANT)		"" (VR(p) == 0 && BooleanCmp.getCond(P(p)).isGREATER_EQUAL() ? 22 : INFINITE)
+r:	BOOLEAN_CMP_INT(load32,INT_CONSTANT)		"" (VR(p) == 0 && BooleanCmp.getCond(P(p)).isGREATER_EQUAL() ? 27 : INFINITE)
+r:	BOOLEAN_CMP_INT(cz, INT_CONSTANT)		"" isZERO(VR(p), 26)
+boolcmp: BOOLEAN_CMP_INT(cz, INT_CONSTANT)		"" isZERO(VR(p), 0)
+r:	BOOLEAN_CMP_INT(szp, INT_CONSTANT)		"" (VR(p) == 0 && EQ_NE(BooleanCmp.getCond(P(p)))?26:INFINITE)
+boolcmp: BOOLEAN_CMP_INT(szp, INT_CONSTANT)		"" (VR(p) == 0 && EQ_NE(BooleanCmp.getCond(P(p)))?0:INFINITE)
+r:	BOOLEAN_CMP_INT(bittest, INT_CONSTANT)		"" ((VR(p) == 0 || VR(p) == 1) && EQ_NE(BooleanCmp.getCond(P(p))) ? 26 : INFINITE)
+boolcmp:	BOOLEAN_CMP_INT(bittest, INT_CONSTANT)		"" ((VR(p) == 0 || VR(p) == 1) && EQ_NE(BooleanCmp.getCond(P(p))) ? 0 : INFINITE)
+r:	BOOLEAN_CMP_INT(boolcmp, INT_CONSTANT)		"" ((VR(p) == 0 && BooleanCmp.getCond(P(p)).isNOT_EQUAL()) || (VR(p) == 1 && BooleanCmp.getCond(P(p)).isEQUAL()) ? 26 : INFINITE)
+boolcmp:	BOOLEAN_CMP_INT(boolcmp, INT_CONSTANT)		"" ((VR(p) == 0 && BooleanCmp.getCond(P(p)).isNOT_EQUAL()) || (VR(p) == 1 && BooleanCmp.getCond(P(p)).isEQUAL()) ? 0 : INFINITE)
+r:	BOOLEAN_CMP_INT(boolcmp, INT_CONSTANT)		"" ((VR(p) == 1 && BooleanCmp.getCond(P(p)).isNOT_EQUAL()) || (VR(p) == 0 && BooleanCmp.getCond(P(p)).isEQUAL()) ? 26 : INFINITE)
+boolcmp:	BOOLEAN_CMP_INT(boolcmp, INT_CONSTANT)		"" ((VR(p) == 1 && BooleanCmp.getCond(P(p)).isNOT_EQUAL()) || (VR(p) == 0 && BooleanCmp.getCond(P(p)).isEQUAL()) ? 0 : INFINITE)
+r:	BOOLEAN_CMP_INT(load32,riv)		"" 41
+boolcmp: BOOLEAN_CMP_INT(load32,riv)		"" 15
+r:	BOOLEAN_CMP_INT(r,load32)		"" 41
+boolcmp: BOOLEAN_CMP_INT(r,load32)		"" 15
+stm:	BYTE_STORE(boolcmp, OTHER_OPERAND(riv,riv))		"" 15
+stm:	BYTE_ASTORE(boolcmp, OTHER_OPERAND(riv, riv))		"" 15
+r:	BOOLEAN_CMP_LONG(rlv,rlv)		"" 8*13
+boolcmp: BOOLEAN_CMP_LONG(rlv,rlv)		"" 11*13
+r: CMP_CMOV(r, OTHER_OPERAND(riv, any))		"" (13 + 30)
+r: CMP_CMOV(r, OTHER_OPERAND(INT_CONSTANT, any))		"" (VRL(p) == 0 && EQ_NE(CondMove.getCond(P(p)))?(11 + 30):INFINITE)
+r: CMP_CMOV(r, OTHER_OPERAND(INT_CONSTANT, OTHER_OPERAND(INT_CONSTANT, INT_CONSTANT)))		"" ((VRL(p) == 0 && CondMove.getCond(P(p)).isLESS() && VRRL(p) == -1 && VRRR(p) == 0) || (VRL(p) == 0 && CondMove.getCond(P(p)).isGREATER_EQUAL() && VRRL(p) == 0 && VRRR(p) == -1) ? 13 : INFINITE)
+r: CMP_CMOV(load32, OTHER_OPERAND(INT_CONSTANT, OTHER_OPERAND(INT_CONSTANT, INT_CONSTANT)))		"" ((VRL(p) == 0 && CondMove.getCond(P(p)).isLESS() && VRRL(p) == -1 && VRRR(p) == 0) || (VRL(p) == 0 && CondMove.getCond(P(p)).isGREATER_EQUAL() && VRRL(p) == 0 && VRRR(p) == -1) ? 18 : INFINITE)
+r: CMP_CMOV(r, OTHER_OPERAND(INT_CONSTANT, OTHER_OPERAND(INT_CONSTANT, INT_CONSTANT)))		"" ((VRL(p) == 0 && CondMove.getCond(P(p)).isLESS() && VRRL(p) == 0 && VRRR(p) == -1) || (VRL(p) == 0 && CondMove.getCond(P(p)).isGREATER_EQUAL() && VRRL(p) == -1 && VRRR(p) == 0) ? 26 : INFINITE)
+r: CMP_CMOV(load32, OTHER_OPERAND(INT_CONSTANT, OTHER_OPERAND(INT_CONSTANT, INT_CONSTANT)))		"" ((VRL(p) == 0 && CondMove.getCond(P(p)).isLESS() && VRRL(p) == 0 && VRRR(p) == -1) || (VRL(p) == 0 && CondMove.getCond(P(p)).isGREATER_EQUAL() && VRRL(p) == -1 && VRRR(p) == 0) ? 31 : INFINITE)
+r: CMP_CMOV(load8, OTHER_OPERAND(INT_CONSTANT, any))		"" FITS(CondMove.getVal2(P(p)), 8, (15 + 30))
+r: CMP_CMOV(uload8, OTHER_OPERAND(r, any))		"" (15 + 30)
+r: CMP_CMOV(r, OTHER_OPERAND(uload8, any))		"" (15 + 30)
+r: CMP_CMOV(sload16, OTHER_OPERAND(INT_CONSTANT, any))		"" FITS(CondMove.getVal2(P(p)), 8, (15 + 30))
+r: CMP_CMOV(load32, OTHER_OPERAND(riv, any))		"" (15 + 30)
+r: CMP_CMOV(r, OTHER_OPERAND(load32, any))		"" (15 + 30)
+r: CMP_CMOV(boolcmp, OTHER_OPERAND(INT_CONSTANT, any))		"" ((VRL(p) == 0 && CondMove.getCond(P(p)).isNOT_EQUAL()) || (VRL(p) == 1 && CondMove.getCond(P(p)).isEQUAL()) ? 30 : INFINITE)
+r: CMP_CMOV(boolcmp, OTHER_OPERAND(INT_CONSTANT, any))		"" ((VRL(p) == 1 && CondMove.getCond(P(p)).isNOT_EQUAL()) || (VRL(p) == 0 && CondMove.getCond(P(p)).isEQUAL()) ? 30 : INFINITE)
+r: CMP_CMOV(bittest, OTHER_OPERAND(INT_CONSTANT, any))		"" ((VRL(p) == 0 || VRL(p) == 1) && EQ_NE(CondMove.getCond(P(p))) ? 30 : INFINITE)
+r: CMP_CMOV(cz, OTHER_OPERAND(INT_CONSTANT, any))		"" isZERO(VRL(p), 30)
+r: CMP_CMOV(szp, OTHER_OPERAND(INT_CONSTANT, any))		"" isZERO(VRL(p), 30)
+r: LCMP_CMOV(r, OTHER_OPERAND(rlv, any))		"" (8*13 + 30)
+czr:	INT_ADD(r, riv)		"" 13
+r:	INT_ADD(r, riv)		"" (!Binary.getResult(P(p)).similar(Binary.getVal1(P(p))) && !Binary.getResult(P(p)).similar(Binary.getVal2(P(p))) ? 11 : INFINITE)
+czr:	INT_ADD(riv, load32)		"" 15
+czr:	INT_ADD(load32, riv)		"" 15
+stm:	INT_STORE(INT_ADD(INT_LOAD(riv,riv),riv),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_STORE(INT_ADD(riv,INT_LOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLR(p), 17)
+stm:	INT_ASTORE(INT_ADD(INT_ALOAD(riv,riv),riv),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_ASTORE(INT_ADD(riv,INT_ALOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLR(p), 17)
+czr:	INT_SUB(riv, r)		"" 13
+r:	INT_SUB(riv, r)		"" (Binary.getResult(P(p)).similar(Binary.getVal2(P(p))) ? 13-2 : INFINITE)
+r:	INT_SUB(load32, r)		"" (Binary.getResult(P(p)).similar(Binary.getVal2(P(p))) ? 15-2 : INFINITE)
+czr:	INT_SUB(riv, load32)		"" 15
+czr:	INT_SUB(load32, riv)		"" 15
+stm:	INT_STORE(INT_SUB(INT_LOAD(riv,riv),riv),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_STORE(INT_SUB(riv, INT_LOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLR(p), 27)
+stm:	INT_ASTORE(INT_SUB(INT_ALOAD(riv,riv),riv),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_ASTORE(INT_SUB(riv, INT_ALOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLR(p), 27)
+r:	INT_MUL(riv, riv)		"" 13
+r:	INT_DIV(riv, riv)		"" 52
+r:	INT_REM(riv, riv)		"" 52
+szpr:	INT_NEG(r)		"" 13
+stm:	INT_STORE(INT_NEG(INT_LOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_ASTORE(INT_NEG(INT_ALOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLL(p), 17)
+szpr:	INT_SHL(riv, INT_AND(r, INT_CONSTANT))		"" (VRR(p) == 31 ? 23 : INFINITE)
+szpr:	INT_SHL(riv, riv)		"" 23
+szpr:	INT_SHL(r, INT_CONSTANT)		"" 13
+r:	INT_SHL(r, INT_CONSTANT)		"" (!Binary.getResult(P(p)).similar(Binary.getVal1(P(p))) && (Binary.getVal2(P(p)).asIntConstant().value & 0x1f) <= 3 ? 11 : INFINITE)
+szpr:	INT_SHL(INT_SHR(r, INT_CONSTANT), INT_CONSTANT)		"" ((VR(p) == VLR(p)) ? 23 : INFINITE)
+stm:	INT_STORE(INT_SHL(INT_LOAD(riv,riv),INT_AND(r,INT_CONSTANT)),OTHER_OPERAND(riv, riv))		"" (ADDRESS_EQUAL(P(p), PLL(p), VLRR(p) == 31 ? 27 : INFINITE))
+stm:	INT_STORE(INT_SHL(INT_LOAD(riv,riv), INT_CONSTANT),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_ASTORE(INT_SHL(INT_ALOAD(riv,riv),INT_AND(r, INT_CONSTANT)),OTHER_OPERAND(riv, riv))		"" (ARRAY_ADDRESS_EQUAL(P(p), PLL(p), VLRR(p) == 31 ? 27 : INFINITE))
+stm:	INT_ASTORE(INT_SHL(INT_ALOAD(riv,riv), INT_CONSTANT),OTHER_OPERAND(riv, riv))		"" (ARRAY_ADDRESS_EQUAL(P(p), PLL(p), VLR(p) == 31 ? 17 : INFINITE))
+szpr:	INT_SHR(riv, INT_AND(r, INT_CONSTANT))		"" (VRR(p) == 31 ? 23 : INFINITE)
+szpr:	INT_SHR(riv, riv)		"" 23
+szpr:	INT_SHR(riv, INT_CONSTANT)		"" 13
+stm:	INT_STORE(INT_SHR(INT_LOAD(riv,riv),INT_AND(r,INT_CONSTANT)),OTHER_OPERAND(riv, riv))		"" (ADDRESS_EQUAL(P(p), PLL(p), VLRR(p) == 31 ? 27 : INFINITE))
+stm:	INT_STORE(INT_SHR(INT_LOAD(riv,riv), INT_CONSTANT),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_ASTORE(INT_SHR(INT_ALOAD(riv,riv),INT_AND(r, INT_CONSTANT)),OTHER_OPERAND(riv, riv))		"" (ARRAY_ADDRESS_EQUAL(P(p), PLL(p), VLRR(p) == 31 ? 27 : INFINITE))
+stm:	INT_ASTORE(INT_SHR(INT_ALOAD(riv,riv), INT_CONSTANT),OTHER_OPERAND(riv, riv))		"" (ARRAY_ADDRESS_EQUAL(P(p), PLL(p), VLR(p) == 31 ? 17 : INFINITE))
+szpr:	INT_USHR(riv, INT_AND(r, INT_CONSTANT))		"" (VRR(p) == 31 ? 23 : INFINITE)
+szpr:	INT_USHR(riv, riv)		"" 23
+szpr:	INT_USHR(riv, INT_CONSTANT)		"" 13
+stm:	INT_STORE(INT_USHR(INT_LOAD(riv,riv),INT_AND(r,INT_CONSTANT)),OTHER_OPERAND(riv, riv))		"" (ADDRESS_EQUAL(P(p), PLL(p), VLRR(p) == 31 ? 27 : INFINITE))
+stm:	INT_STORE(INT_USHR(INT_LOAD(riv,riv), INT_CONSTANT),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_ASTORE(INT_USHR(INT_ALOAD(riv,riv),INT_AND(r, INT_CONSTANT)),OTHER_OPERAND(riv, riv))		"" (ARRAY_ADDRESS_EQUAL(P(p), PLL(p), VLRR(p) == 31 ? 27 : INFINITE))
+stm:	INT_ASTORE(INT_USHR(INT_ALOAD(riv,riv), INT_CONSTANT),OTHER_OPERAND(riv, riv))		"" (ARRAY_ADDRESS_EQUAL(P(p), PLL(p), VLR(p) == 31 ? 17 : INFINITE))
+r:	INT_OR(INT_SHL(r,INT_CONSTANT),INT_USHR(r,INT_CONSTANT))		"" (Binary.getVal1(PL(p)).similar(Binary.getVal1(PR(p))) && ((-VLR(p)) & 0x1f) == (VRR(p)&0x1f) ? 13 : INFINITE)
+r:      INT_OR(INT_USHR(r,INT_CONSTANT),INT_SHL(r,INT_CONSTANT))		"" (Binary.getVal1(PL(p)).similar(Binary.getVal1(PR(p))) && ((-VRR(p)) & 0x1f) == (VLR(p)&0x1f) ? 13 : INFINITE)
+r:      INT_OR(INT_SHL(r,INT_CONSTANT),INT_USHR(r,INT_CONSTANT))		"" (Binary.getVal1(PL(p)).similar(Binary.getVal1(PR(p))) && ((-VLR(p)) & 0x1f) == (VRR(p)&0x1f) && ((VLR(p)&0x1f) == 31) ? 11 : INFINITE)
+r:      INT_OR(INT_USHR(r,INT_CONSTANT),INT_SHL(r,INT_CONSTANT))		"" (Binary.getVal1(PL(p)).similar(Binary.getVal1(PR(p))) && ((-VRR(p)) & 0x1f) == (VLR(p)&0x1f) && ((VRR(p)&0x1f) == 31) ? 11 : INFINITE)
+r:      INT_OR(INT_SHL(r,INT_AND(r,INT_CONSTANT)),INT_USHR(r,INT_AND(INT_NEG(r),INT_CONSTANT)))		"" (Binary.getVal1(PL(p)).similar(Binary.getVal1(PR(p))) && (VLRR(p) == 31) && (VRRR(p) == 31) && Binary.getVal1(PLR(p)).similar(Unary.getVal(PRRL(p))) ? 23 : INFINITE)
+r:      INT_OR(INT_USHR(r,INT_AND(INT_NEG(r),INT_CONSTANT)),INT_SHL(r,INT_AND(r,INT_CONSTANT)))		"" (Binary.getVal1(PL(p)).similar(Binary.getVal1(PR(p))) && (VLRR(p) == 31) && (VRRR(p) == 31) && Binary.getVal1(PRR(p)).similar(Unary.getVal(PLRL(p))) ? 23 : INFINITE)
+r:      INT_OR(INT_SHL(r,INT_AND(INT_NEG(r),INT_CONSTANT)),INT_USHR(r,INT_AND(r,INT_CONSTANT)))		"" (Binary.getVal1(PL(p)).similar(Binary.getVal1(PR(p))) && (VLRR(p) == 31) && (VRRR(p) == 31) && Binary.getVal1(PRR(p)).similar(Unary.getVal(PLRL(p))) ? 23 : INFINITE)
+r:      INT_OR(INT_USHR(r,INT_AND(r,INT_CONSTANT)),INT_SHL(r,INT_AND(INT_NEG(r),INT_CONSTANT)))		"" (Binary.getVal1(PL(p)).similar(Binary.getVal1(PR(p))) && (VLRR(p) == 31) && (VRRR(p) == 31) && Binary.getVal1(PLR(p)).similar(Unary.getVal(PRRL(p))) ? 23 : INFINITE)
+szpr:	INT_AND(riv, riv)		"" 13
+szp:	INT_AND(r, riv)		"" 11
+szpr:	INT_AND(riv, load32)		"" 15
+szpr:	INT_AND(load32, riv)		"" 15
+szp:	INT_AND(riv, load32)		"" 13
+szp:	INT_AND(load32, riv)		"" 13
+stm:	INT_STORE(INT_AND(INT_LOAD(riv,riv),riv),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_STORE(INT_AND(riv,INT_LOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLR(p), 17)
+stm:	INT_ASTORE(INT_AND(INT_ALOAD(riv,riv),riv),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_ASTORE(INT_AND(riv,INT_ALOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLR(p), 17)
+szpr:	INT_OR(riv, riv)		"" 13
+szpr:	INT_OR(riv, load32)		"" 15
+szpr:	INT_OR(load32, riv)		"" 15
+stm:	INT_STORE(INT_OR(INT_LOAD(riv,riv),riv),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_STORE(INT_OR(riv, INT_LOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLR(p), 17)
+stm:	INT_ASTORE(INT_OR(INT_ALOAD(riv,riv),riv),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_ASTORE(INT_OR(riv, INT_ALOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLR(p), 17)
+szpr:	INT_XOR(riv, riv)		"" 13
+szpr:	INT_XOR(riv, load32)		"" 15
+szpr:	INT_XOR(load32, riv)		"" 15
+stm:	INT_STORE(INT_XOR(INT_LOAD(riv,riv),riv),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_STORE(INT_XOR(riv,INT_LOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLR(p), 17)
+stm:	INT_ASTORE(INT_XOR(INT_ALOAD(riv,riv),riv),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_ASTORE(INT_XOR(riv,INT_ALOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLR(p), 17)
+r:	INT_NOT(r)		"" 13
+stm:	INT_STORE(INT_NOT(INT_LOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ADDRESS_EQUAL(P(p), PLL(p), 17)
+stm:	INT_ASTORE(INT_NOT(INT_ALOAD(riv,riv)),OTHER_OPERAND(riv, riv))		"" ARRAY_ADDRESS_EQUAL(P(p), PLL(p), 17)
+r:	LONG_ADD(r, rlv)		"" 23
+r:	LONG_SUB(rlv, rlv)		"" 23
+r:	LONG_MUL(rlv, rlv)		"" 23
+r:	LONG_NEG(r)		"" 23
+r:	LONG_SHL(rlv, riv)		"" 20
+r:	LONG_SHL(rlv, INT_AND(riv, INT_CONSTANT))		"" 20
+r:	LONG_SHR(rlv, riv)		"" 20
+r:	LONG_SHR(rlv, INT_AND(riv, INT_CONSTANT))		"" 20
+r:	LONG_USHR(rlv, riv)		"" 20
+r:	LONG_USHR(rlv, INT_AND(riv, INT_CONSTANT))		"" 20
+r:	LONG_AND(rlv, rlv)		"" 23
+r:	LONG_OR(rlv, rlv)		"" 23
+r:	LONG_XOR(r, rlv)		"" 23
+r:	LONG_NOT(r)		"" 23
+r:	INT_2BYTE(r)		"" 15
+r:	INT_2BYTE(load8_16_32)		"" 17
+stm:	BYTE_STORE(INT_2BYTE(r),OTHER_OPERAND(riv, riv))		"" 15
+stm:	BYTE_ASTORE(INT_2BYTE(r),OTHER_OPERAND(riv, riv))		"" 15
+szpr:	INT_2USHORT(r)		"" 23
+r:	INT_2USHORT(load16_32)		"" 25
+stm:	SHORT_STORE(INT_2USHORT(r), OTHER_OPERAND(riv,riv))		"" 15
+stm:	SHORT_ASTORE(INT_2USHORT(r), OTHER_OPERAND(riv, riv))		"" 15
+r:	INT_2SHORT(r)		"" 15
+r:	INT_2SHORT(load16_32)		"" 17
+stm:	SHORT_STORE(INT_2SHORT(r), OTHER_OPERAND(riv,riv))		"" 15
+stm:	SHORT_ASTORE(INT_2SHORT(r), OTHER_OPERAND(riv, riv))		"" 15
+r:	INT_2LONG(r)		"" 33
+r:	INT_2LONG(load32)		"" 38
+r:      LONG_AND(INT_2LONG(r), LONG_CONSTANT)		"" ((Binary.getVal2(P(p)).asLongConstant().upper32() == 0) && (Binary.getVal2(P(p)).asLongConstant().lower32() == -1)? 23 : INFINITE)
+r:      LONG_AND(INT_2LONG(load32), LONG_CONSTANT)		"" ((Binary.getVal2(P(p)).asLongConstant().upper32() == 0) && (Binary.getVal2(P(p)).asLongConstant().lower32() == -1)? 28 : INFINITE)
+r:      LONG_SHL(INT_2LONG(r), INT_CONSTANT)		"" (VR(p) == 32 ? 23 : INFINITE)
+r:      LONG_SHL(INT_2LONG(load64), INT_CONSTANT)		"" (VR(p) == 32 ? 23 : INFINITE)
+r:	LONG_2INT(r)		"" 13
+stm:	INT_STORE(LONG_2INT(r), OTHER_OPERAND(riv,riv))		"" 15
+stm:	INT_ASTORE(LONG_2INT(r), OTHER_OPERAND(riv, riv))		"" 15
+r:	LONG_2INT(load64)		"" 15
+r:	LONG_2INT(LONG_USHR(r, INT_CONSTANT))		"" (VLR(p) == 32 ? 13 : INFINITE)
+r:      LONG_2INT(LONG_SHR(r, INT_CONSTANT))		"" (VLR(p) == 32 ? 13 : INFINITE)
+r:      LONG_2INT(LONG_USHR(load64, INT_CONSTANT))		"" (VLR(p) == 32 ? 15 : INFINITE)
+r:      LONG_2INT(LONG_SHR(load64, INT_CONSTANT))		"" (VLR(p) == 32 ? 15 : INFINITE)
+load32:      LONG_2INT(LONG_USHR(load64, INT_CONSTANT))		"" (VLR(p) == 32 ? 0 : INFINITE)
+load32:      LONG_2INT(LONG_SHR(load64, INT_CONSTANT))		"" (VLR(p) == 32 ? 0 : INFINITE)
+r:	INT_MOVE(riv)		"" 13
+czr:	INT_MOVE(czr)		"" 11
+cz:	INT_MOVE(cz)		"" 0
+szpr:	INT_MOVE(szpr)		"" 11
+szp:	INT_MOVE(szp)		"" 0
+address1reg:	INT_MOVE(address1reg)		"" 0
+address1scaledreg:	INT_MOVE(address1scaledreg)		"" 0
+address:	INT_MOVE(address)		"" 0
+sload8:	INT_MOVE(sload8)		"" 0
+uload8:	INT_MOVE(uload8)		"" 0
+load8:	INT_MOVE(load8)		"" 0
+sload16: INT_MOVE(sload16)		"" 0
+uload16: INT_MOVE(uload16)		"" 0
+load16:	INT_MOVE(load16)		"" 0
+load32:	INT_MOVE(load32)		"" 0
+load64:	LONG_MOVE(load64)		"" 0
+r:	LONG_MOVE(r)		"" 23
+r:	LONG_MOVE(LONG_CONSTANT)		"" 21
+r:	GET_CURRENT_PROCESSOR		"" 15
+r:	GET_JTOC(r)		"" 15
+r:	BYTE_LOAD(riv, riv)		"" 20
+r:	BYTE_ALOAD(riv, riv)		"" 20
+r:	UBYTE_LOAD(riv, riv)		"" 15
+r:	UBYTE_ALOAD(riv, riv)		"" 15
+uload8:	INT_AND(load8_16_32, INT_CONSTANT)		"" (VR(p) == 0xff ? 0 : INFINITE)
+r:	INT_AND(load8_16_32, INT_CONSTANT)		"" (VR(p) == 0xff ? 15 : INFINITE)
+r:	INT_2BYTE(load8_16_32)		"" 20
+r:	INT_USHR(INT_SHL(load8_16_32, INT_CONSTANT), INT_CONSTANT)		"" (VR(p) == 24 && VLLR(p) == 24 ? 15 : INFINITE)
+r:	SHORT_LOAD(riv, riv)		"" 20
+r:	SHORT_ALOAD(riv, riv)		"" 20
+r:	USHORT_LOAD(riv, riv)		"" 15
+r:	USHORT_ALOAD(riv, riv)		"" 15
+r:	INT_AND(load16_32, INT_CONSTANT)		"" (VR(p) == 0xffff ? 15 : INFINITE)
+r:	INT_2USHORT(load16_32)		"" 15
+r:	INT_2USHORT(load16_32)		"" 20
+r:	INT_USHR(INT_SHL(load16_32, INT_CONSTANT), INT_CONSTANT)		"" (VR(p) == 16 && VLR(p) == 16 ? 15 : INFINITE)
+r:	INT_LOAD(riv, riv)		"" 15
+r:	INT_LOAD(riv, address1scaledreg)		"" 15
+r:	INT_LOAD(address1scaledreg, riv)		"" 15
+r:	INT_LOAD(address1scaledreg, address1reg)		"" 15
+r:	INT_LOAD(address1reg, address1scaledreg)		"" 15
+r:	INT_LOAD(address, INT_CONSTANT)		"" 15
+r:	INT_ALOAD(riv, riv)		"" 15
+r:	LONG_LOAD(riv, riv)		"" 30
+r:	LONG_ALOAD(riv, riv)		"" 30
+r:	PREPARE_INT(riv, riv)		"" 15
+r:	PREPARE_INT(r, address1scaledreg)		"" 15
+r:	PREPARE_INT(address1scaledreg, r)		"" 15
+r:	PREPARE_INT(address1scaledreg, address1reg)		"" 15
+r:	PREPARE_INT(address1reg, address1scaledreg)		"" 15
+r:	PREPARE_INT(address, INT_CONSTANT)		"" 15
+r:	PREPARE_INT(INT_CONSTANT, address)		"" 15
+r:	PREPARE_LONG(riv, riv)		"" 30
+r:	ATTEMPT_INT(riv, OTHER_OPERAND(riv, OTHER_OPERAND(riv, riv)))		"" 67
+r:	ATTEMPT_INT(r, OTHER_OPERAND(address1scaledreg, OTHER_OPERAND(riv, riv)))		"" 67
+r:	ATTEMPT_INT(address1scaledreg, OTHER_OPERAND(r, OTHER_OPERAND(riv, riv)))		"" 67
+r:	ATTEMPT_INT(address1scaledreg, OTHER_OPERAND(address1reg, OTHER_OPERAND(riv, riv)))		"" 67
+r:	ATTEMPT_INT(address1reg, OTHER_OPERAND(address1scaledreg, OTHER_OPERAND(riv, riv)))		"" 67
+r:	ATTEMPT_INT(address, OTHER_OPERAND(INT_CONSTANT, OTHER_OPERAND(riv, riv)))		"" 67
+r:	ATTEMPT_INT(INT_CONSTANT, OTHER_OPERAND(address, OTHER_OPERAND(riv, riv)))		"" 67
+stm:	INT_IFCMP(ATTEMPT_INT(riv, OTHER_OPERAND(riv, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isZERO(VR(p), 54)
+stm:	INT_IFCMP(ATTEMPT_INT(r, OTHER_OPERAND(address1scaledreg, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isZERO(VR(p), 54)
+stm:	INT_IFCMP(ATTEMPT_INT(address1scaledreg, OTHER_OPERAND(r, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isZERO(VR(p), 54)
+stm:	INT_IFCMP(ATTEMPT_INT(address1scaledreg, OTHER_OPERAND(address1reg, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isZERO(VR(p),54)
+stm:	INT_IFCMP(ATTEMPT_INT(address1reg, OTHER_OPERAND(address1scaledreg, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isZERO(VR(p),54)
+stm:	INT_IFCMP(ATTEMPT_INT(address, OTHER_OPERAND(INT_CONSTANT, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isZERO(VR(p), 54)
+stm:	INT_IFCMP(ATTEMPT_INT(INT_CONSTANT, OTHER_OPERAND(address, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isZERO(VR(p),54)
+stm:	INT_IFCMP(ATTEMPT_INT(riv, OTHER_OPERAND(riv, OTHER_OPERAND(riv,riv))), INT_CONSTANT)		"" isONE(VR(p), 54)
+stm:	INT_IFCMP(ATTEMPT_INT(r, OTHER_OPERAND(address1scaledreg, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isONE(VR(p), 54)
+stm:	INT_IFCMP(ATTEMPT_INT(address1scaledreg, OTHER_OPERAND(r, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isONE(VR(p), 54)
+stm:	INT_IFCMP(ATTEMPT_INT(address1scaledreg, OTHER_OPERAND(address1reg, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isONE(VR(p), 54)
+stm:	INT_IFCMP(ATTEMPT_INT(address1reg, OTHER_OPERAND(address1scaledreg, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isONE(VR(p), 54)
+stm:	INT_IFCMP(ATTEMPT_INT(address, OTHER_OPERAND(INT_CONSTANT, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isONE(VR(p), 54)
+stm:	INT_IFCMP(ATTEMPT_INT(INT_CONSTANT, OTHER_OPERAND(address, OTHER_OPERAND(riv,riv))),INT_CONSTANT)		"" isONE(VR(p), 54)
+r:	ATTEMPT_LONG(riv, OTHER_OPERAND(riv, OTHER_OPERAND(rlv, rlv)))		"" 67
+stm:	BYTE_STORE(riv, OTHER_OPERAND(riv, riv))		"" 15
+stm:	BYTE_STORE(load8, OTHER_OPERAND(riv, riv))		"" 25
+stm:	BYTE_ASTORE(riv, OTHER_OPERAND(riv, riv))		"" 15
+stm:	BYTE_ASTORE(load8, OTHER_OPERAND(riv, riv))		"" 25
+stm:	SHORT_STORE(riv, OTHER_OPERAND(riv, riv))		"" 15
+stm:	SHORT_STORE(load16, OTHER_OPERAND(riv, riv))		"" 25
+stm:	SHORT_ASTORE(riv, OTHER_OPERAND(riv, riv))		"" 15
+stm:	SHORT_ASTORE(load16, OTHER_OPERAND(riv, riv))		"" 25
+stm:	INT_STORE(riv, OTHER_OPERAND(riv, riv))		"" 15
+stm:	INT_STORE(riv, OTHER_OPERAND(riv, address1scaledreg))		"" 15
+stm:	INT_STORE(riv, OTHER_OPERAND(address1scaledreg, riv))		"" 15
+stm:	INT_STORE(riv, OTHER_OPERAND(address1scaledreg, address1reg))		"" 15
+stm:	INT_STORE(riv, OTHER_OPERAND(address1reg, address1scaledreg))		"" 15
+stm:	INT_STORE(riv, OTHER_OPERAND(address, INT_CONSTANT))		"" 15
+stm:	INT_ASTORE(riv, OTHER_OPERAND(riv, riv))		"" 15
+stm:	LONG_STORE(r, OTHER_OPERAND(riv, riv))		"" 30
+stm:	LONG_STORE(LONG_CONSTANT, OTHER_OPERAND(riv, riv))		"" 26
+stm:	LONG_ASTORE(r, OTHER_OPERAND(riv, riv))		"" 30
+stm:	LONG_ASTORE(LONG_CONSTANT, OTHER_OPERAND(riv, riv))		"" 26
+stm:	INT_IFCMP(r,riv)		"" 26
+stm:	INT_IFCMP(r, INT_CONSTANT)		"" (VR(p) == 0 && EQ_NE(IfCmp.getCond(P(p)))?24:INFINITE)
+stm:	INT_IFCMP(load8, INT_CONSTANT)		"" FITS(IfCmp.getVal2(P(p)), 8, 28)
+stm:	INT_IFCMP(uload8, r)		"" 28
+stm:	INT_IFCMP(r, uload8)		"" 28
+stm:	INT_IFCMP(sload16, INT_CONSTANT)		"" FITS(IfCmp.getVal2(P(p)), 8, 28)
+stm:	INT_IFCMP(load32, riv)		"" 28
+stm:	INT_IFCMP(r, load32)		"" 28
+stm:	INT_IFCMP(boolcmp, INT_CONSTANT)		"" ((VR(p) == 0 && IfCmp.getCond(P(p)).isNOT_EQUAL()) || (VR(p) == 1 && IfCmp.getCond(P(p)).isEQUAL()) ? 13:INFINITE)
+stm:	INT_IFCMP(boolcmp, INT_CONSTANT)		"" ((VR(p) == 0 && IfCmp.getCond(P(p)).isEQUAL()) || (VR(p) == 1 && IfCmp.getCond(P(p)).isNOT_EQUAL()) ? 13:INFINITE)
+stm:	INT_IFCMP(cz, INT_CONSTANT)		"" isZERO(VR(p), 11)
+stm:	INT_IFCMP(szp, INT_CONSTANT)		"" (VR(p) == 0 && EQ_NE(IfCmp.getCond(P(p)))?11:INFINITE)
+stm:	INT_IFCMP(bittest, INT_CONSTANT)		"" ((VR(p) == 0 || VR(p) == 1) && EQ_NE(IfCmp.getCond(P(p))) ? 11 : INFINITE)
+stm:	INT_IFCMP2(r,riv)		"" 26
+stm:	INT_IFCMP2(load32,riv)		"" 28
+stm:	INT_IFCMP2(r,load32)		"" 28
+stm:	LONG_IFCMP(rlv,rlv)		"" 30
+r:	LONG_CMP(rlv,rlv)		"" 10*13
+stm:	GOTO		"" 11
+stm:	PREFETCH(r)		"" 11
+stm:	PAUSE		"" 11
+stm:	RETURN(NULL)		"" 13
+stm:	RETURN(INT_CONSTANT)		"" 11
+stm:	RETURN(r)		"" 13
+stm:	RETURN(LONG_CONSTANT)		"" 11
+r:	CALL(r, any)		"" 13
+r:	CALL(BRANCH_TARGET, any)		"" 13
+r:	CALL(INT_LOAD(riv, riv), any)		"" 11
+r:	SYSCALL(r, any)		"" 13
+r:	SYSCALL(INT_LOAD(riv, riv), any)		"" 11
+r:      GET_CAUGHT_EXCEPTION		"" 15
+stm:      SET_CAUGHT_EXCEPTION(r)		"" 17
+r:      GET_TIME_BASE		"" 15
+stm:	YIELDPOINT_OSR(any, any)		"" 10
+bittest:	INT_AND(INT_USHR(r,INT_AND(r,INT_CONSTANT)),INT_CONSTANT)		"" ((VR(p) == 1) && (VLRR(p) == 31) ? 13:INFINITE)
+bittest:	INT_AND(INT_USHR(load32,INT_AND(r,INT_CONSTANT)),INT_CONSTANT)		"" (VR(p) == 1 ? 31:INFINITE)
+bittest:	INT_AND(INT_USHR(r,INT_CONSTANT),INT_CONSTANT)		"" ((VR(p) == 1) && (VLR(p) <= 31) ? 13:INFINITE)
+bittest:	INT_AND(INT_SHR(r,INT_AND(r,INT_CONSTANT)),INT_CONSTANT)		"" ((VR(p) == 1) && (VLRR(p) == 31) ? 13:INFINITE)
+bittest:	INT_AND(INT_SHR(load32,INT_AND(r,INT_CONSTANT)),INT_CONSTANT)		"" (VR(p) == 1 ? 31:INFINITE)
+bittest:	INT_AND(INT_SHR(r,INT_CONSTANT),INT_CONSTANT)		"" ((VR(p) == 1) && (VLR(p) <= 31) ? 13:INFINITE)
+bittest:	INT_AND(INT_SHL(INT_CONSTANT,INT_AND(riv,INT_CONSTANT)),r)		"" ((VLL(p) == 1) && (VLRR(p) == 31)? 13:INFINITE)
+bittest:	INT_AND(INT_SHL(INT_CONSTANT,INT_AND(r, INT_CONSTANT)),load32)		"" (VLL(p) == 1 ? 31:INFINITE)
+bittest:	INT_AND(r,INT_SHL(INT_CONSTANT,INT_AND(r, INT_CONSTANT)))		"" ((VRL(p) == 1) && (VRRR(p) == 31) ? 13:INFINITE)
+bittest:	INT_AND(load32,INT_SHL(INT_CONSTANT,INT_AND(r, INT_CONSTANT)))		"" (VRL(p) == 1 ? 31:INFINITE)
+r: FLOAT_ADD(r, r)		"" (p.child1.isREGISTERNode() ? 20 : 30)
+r: FLOAT_ADD(r, r)		"" (p.child2.isREGISTERNode() ? 20 : 30)
+r: FLOAT_SUB(r, r)		"" 20
+r: FLOAT_MUL(r, r)		"" (p.child1.isREGISTERNode() ? 20 : 30)
+r: FLOAT_MUL(r, r)		"" (p.child2.isREGISTERNode() ? 20 : 30)
+r: FLOAT_DIV(r, r)		"" 20
+r: FLOAT_NEG(r)		"" 20
+r: DOUBLE_ADD(r, r)		"" (p.child1.isREGISTERNode() ? 20 : 30)
+r: DOUBLE_ADD(r, r)		"" (p.child2.isREGISTERNode() ? 20 : 30)
+r: DOUBLE_SUB(r, r)		"" 20
+r: DOUBLE_MUL(r, r)		"" (p.child1.isREGISTERNode() ? 20 : 30)
+r: DOUBLE_DIV(r, r)		"" 20
+r: DOUBLE_NEG(r)		"" 20
+r: FLOAT_REM(r, r)		"" 20
+r: DOUBLE_REM(r, r)		"" 20
+r: LONG_2FLOAT(r)		"" 20
+r: LONG_2DOUBLE(r)		"" 20
+r:	FLOAT_MOVE(r)		"" 20
+r:	DOUBLE_MOVE(r)		"" 20
+r:	DOUBLE_LOAD(riv, riv)		"" 20
+r:	DOUBLE_ALOAD(riv, riv)		"" 20
+r:	FLOAT_LOAD(riv, riv)		"" 20
+r:	FLOAT_ALOAD(riv, riv)		"" 20
+stm:	DOUBLE_STORE(r, OTHER_OPERAND(riv, riv))		"" 20
+stm:	DOUBLE_ASTORE(r, OTHER_OPERAND(riv, riv))		"" 20
+stm:	FLOAT_STORE(r, OTHER_OPERAND(riv, riv))		"" 20
+stm:	FLOAT_ASTORE(r, OTHER_OPERAND(riv, riv))		"" 20
+r: INT_2FLOAT(riv)		"" 20
+r: INT_2DOUBLE(riv)		"" 20
+r:	FLOAT_2DOUBLE(r)		"" 20
+r:	DOUBLE_2FLOAT(r)		"" 20
+r: FLOAT_2INT(r)		"" 20
+r: FLOAT_2LONG(r)		"" 20
+r: DOUBLE_2INT(r)		"" 20
+r: DOUBLE_2LONG(r)		"" 20
+r:	FLOAT_AS_INT_BITS(r)		"" 20
+r:	DOUBLE_AS_LONG_BITS(r)		"" 20
+r:	INT_BITS_AS_FLOAT(riv)		"" 20
+r:	LONG_BITS_AS_DOUBLE(rlv)		"" 20
+r:	MATERIALIZE_FP_CONSTANT(INT_CONSTANT)		"" 20
+stm:      CLEAR_FLOATING_POINT_STATE		"" 0
+stm:   FLOAT_IFCMP(r,r)		"" 20
+stm:   DOUBLE_IFCMP(r,r)		"" 20
+%%
+public static final byte[] action={0
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,NOFLAGS
+   ,NOFLAGS
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,NOFLAGS
+   ,NOFLAGS
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,NOFLAGS
+   ,NOFLAGS
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,NOFLAGS
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,NOFLAGS
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION | RIGHT_CHILD_FIRST
+   ,EMIT_INSTRUCTION | RIGHT_CHILD_FIRST
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION | RIGHT_CHILD_FIRST
+   ,EMIT_INSTRUCTION | RIGHT_CHILD_FIRST
+   ,EMIT_INSTRUCTION | RIGHT_CHILD_FIRST
+   ,EMIT_INSTRUCTION | RIGHT_CHILD_FIRST
+   ,EMIT_INSTRUCTION | RIGHT_CHILD_FIRST
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,NOFLAGS
+   ,EMIT_INSTRUCTION
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,NOFLAGS
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+   ,EMIT_INSTRUCTION
+};
+
+void code16(OPT_BURS_TreeNode p) {
+    pushMO(MO_L(P(p), B));
+}
+void code17(OPT_BURS_TreeNode p) {
+    pushMO(MO_AL(P(p), B_S, B));
+}
+void code18(OPT_BURS_TreeNode p) {
+    pushMO(MO_L(P(p), B));
+}
+void code19(OPT_BURS_TreeNode p) {
+    pushMO(MO_AL(P(p), B_S, B));
+}
+void code22(OPT_BURS_TreeNode p) {
+    pushMO(MO_L(P(p), W));
+}
+void code23(OPT_BURS_TreeNode p) {
+    pushMO(MO_AL(P(p), W_S, W));
+}
+void code24(OPT_BURS_TreeNode p) {
+    pushMO(MO_L(P(p), W));
+}
+void code25(OPT_BURS_TreeNode p) {
+    pushMO(MO_AL(P(p), W_S, W));
+}
+void code28(OPT_BURS_TreeNode p) {
+    pushMO(MO_L(P(p), DW));
+}
+void code29(OPT_BURS_TreeNode p) {
+    pushMO(MO_AL(P(p), DW_S, DW));
+}
+void code34(OPT_BURS_TreeNode p) {
+    pushMO(MO_L(P(p), QW));
+}
+void code35(OPT_BURS_TreeNode p) {
+    pushMO(MO_AL(P(p), QW_S, QW));
+}
+void code38(OPT_BURS_TreeNode p) {
+    pushAddress(null, Binary.getVal1(P(p)).asRegister(), LEA_SHIFT(Binary.getVal2(P(p))), Offset.zero());
+}
+void code39(OPT_BURS_TreeNode p) {
+    pushAddress(R(Binary.getVal1(P(p))), null, B_S, Offset.fromIntSignExtend(VR(p)));
+}
+void code40(OPT_BURS_TreeNode p) {
+    pushAddress(R(Move.getVal(P(p))), null, B_S, Offset.zero());
+}
+void code41(OPT_BURS_TreeNode p) {
+    pushAddress(R(Binary.getVal1(P(p))), R(Binary.getVal2(P(p))), B_S, Offset.zero());
+}
+void code42(OPT_BURS_TreeNode p) {
+    augmentAddress(Binary.getVal2(P(p)));
+}
+void code43(OPT_BURS_TreeNode p) {
+    augmentAddress(Binary.getVal2(P(p)));
+}
+void code44(OPT_BURS_TreeNode p) {
+    augmentAddress(Binary.getVal1(P(p)));
+}
+void code45(OPT_BURS_TreeNode p) {
+    augmentAddress(Binary.getVal2(P(p)));
+}
+void code46(OPT_BURS_TreeNode p) {
+    augmentAddress(Binary.getVal2(P(p)));
+}
+void code47(OPT_BURS_TreeNode p) {
+    combineAddresses();
+}
+void code48(OPT_BURS_TreeNode p) {
+    combineAddresses();
+}
+void code49(OPT_BURS_TreeNode p) {
+    augmentAddress(Binary.getVal2(P(p))); 
+EMIT_Lea(P(p), Binary.getResult(P(p)), consumeAddress(DW, null, null));
+}
+void code50(OPT_BURS_TreeNode p) {
+    augmentAddress(Binary.getVal1(P(p))); 
+EMIT_Lea(P(p), Binary.getResult(P(p)), consumeAddress(DW, null, null));
+}
+void code51(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+EMIT_Lea(P(p), Binary.getResult(P(p)), consumeAddress(DW, null, null));
+}
+void code52(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+EMIT_Lea(P(p), Binary.getResult(P(p)), consumeAddress(DW, null, null));
+}
+void code53(OPT_BURS_TreeNode p) {
+    augmentAddress(Binary.getVal2(P(p))); 
+EMIT_Lea(P(p), Binary.getResult(P(p)), consumeAddress(DW, null, null));
+}
+void code54(OPT_BURS_TreeNode p) {
+    EMIT_Lea(P(p), Move.getResult(P(p)), consumeAddress(DW, null, null));
+}
+void code55(OPT_BURS_TreeNode p) {
+    EMIT(InlineGuard.mutate(P(p), IG_PATCH_POINT, null, null, null, InlineGuard.getTarget(P(p)), InlineGuard.getBranchProfile(P(p))));
+}
+void code56(OPT_BURS_TreeNode p) {
+    EMIT(P(p));
+}
+void code57(OPT_BURS_TreeNode p) {
+    EMIT(P(p));
+}
+void code58(OPT_BURS_TreeNode p) {
+    EMIT(P(p));
+}
+void code59(OPT_BURS_TreeNode p) {
+    EMIT(P(p));
+}
+void code60(OPT_BURS_TreeNode p) {
+    EMIT(P(p));
+}
+void code61(OPT_BURS_TreeNode p) {
+    LOWTABLESWITCH(P(p));
+}
+void code62(OPT_BURS_TreeNode p) {
+    RESOLVE(P(p));
+}
+void code64(OPT_BURS_TreeNode p) {
+    EMIT(P(p));
+}
+void code65(OPT_BURS_TreeNode p) {
+    EMIT(P(p));
+}
+void code66(OPT_BURS_TreeNode p) {
+    EMIT(P(p));
+}
+void code67(OPT_BURS_TreeNode p) {
+    PROLOGUE(P(p));
+}
+void code68(OPT_BURS_TreeNode p) {
+    GET_EXCEPTION_OBJECT(P(p));
+}
+void code69(OPT_BURS_TreeNode p) {
+    SET_EXCEPTION_OBJECT(P(p));
+}
+void code70(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Trap.mutate(P(p), IA32_INT, Trap.getGuardResult(P(p)), Trap.getTCode(P(p))));
+}
+void code71(OPT_BURS_TreeNode p) {
+    TRAP_IF_IMM(P(p), false);
+}
+void code72(OPT_BURS_TreeNode p) {
+    TRAP_IF_IMM(P(p), true);
+}
+void code73(OPT_BURS_TreeNode p) {
+    EMIT(MIR_TrapIf.mutate(P(p), IA32_TRAPIF, 
+                       TrapIf.getGuardResult(P(p)), 
+		       TrapIf.getVal1(P(p)), 
+		       TrapIf.getVal2(P(p)), 
+		       COND(TrapIf.getCond(P(p))), 
+		       TrapIf.getTCode(P(p))));
+}
+void code74(OPT_BURS_TreeNode p) {
+    EMIT(MIR_TrapIf.mutate(P(p), IA32_TRAPIF, 
+                       TrapIf.getGuardResult(P(p)), 
+		       consumeMO(), 
+		       TrapIf.getVal2(P(p)), 
+		       COND(TrapIf.getCond(P(p))), 
+		       TrapIf.getTCode(P(p))));
+}
+void code75(OPT_BURS_TreeNode p) {
+    EMIT(MIR_TrapIf.mutate(P(p), IA32_TRAPIF, 
+                       TrapIf.getGuardResult(P(p)), 
+		       TrapIf.getVal1(P(p)), 
+	               consumeMO(), 
+		       COND(TrapIf.getCond(P(p))), 
+		       TrapIf.getTCode(P(p))));
+}
+void code76(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_XOR, P(p), Unary.getResult(P(p)), Unary.getVal(P(p)), IC(1));
+}
+void code77(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_XOR, P(p), MO_S(P(p), B), MO_S(P(p), B), IC(1));
+}
+void code78(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_XOR, P(p), MO_AS(P(p), B_S, B), MO_AS(P(p), B_S, B), IC(1));
+}
+void code79(OPT_BURS_TreeNode p) {
+    BOOLEAN_CMP_INT(P(p), BooleanCmp.getResult(P(p)), 
+   BooleanCmp.getVal1(P(p)), BooleanCmp.getVal2(P(p)), 
+   BooleanCmp.getCond(P(p)));
+}
+void code80(OPT_BURS_TreeNode p) {
+    pushCOND(BooleanCmp.getCond(P(p))); 
+EMIT(MIR_Compare.mutate(P(p), IA32_CMP, BooleanCmp.getVal1(P(p)), BooleanCmp.getVal2(P(p))));
+}
+void code81(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p),MIR_Test.create(IA32_TEST, BooleanCmp.getVal1(P(p)), BooleanCmp.getVal1(P(p)).copy())));
+BOOLEAN_CMP_INT(P(p), BooleanCmp.getResult(P(p)), BooleanCmp.getCond(P(p)));
+}
+void code82(OPT_BURS_TreeNode p) {
+    pushCOND(BooleanCmp.getCond(P(p))); 
+EMIT(CPOS(P(p),MIR_Test.create(IA32_TEST, BooleanCmp.getVal1(P(p)), BooleanCmp.getVal1(P(p)).copy())));
+}
+void code83(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_SHR, P(p), BooleanCmp.getResult(P(p)), BooleanCmp.getVal1(P(p)), IC(31));
+}
+void code84(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_SHR, P(p), BooleanCmp.getResult(P(p)), consumeMO(), IC(31));
+}
+void code85(OPT_BURS_TreeNode p) {
+    OPT_RegisterOperand result = BooleanCmp.getResult(P(p)); 
+EMIT_Commutative(IA32_SHR, P(p), result, BooleanCmp.getVal1(P(p)), IC(31)); 
+EMIT(CPOS(P(p),MIR_BinaryAcc.create(IA32_XOR, result.copyRO(), IC(1))));
+}
+void code86(OPT_BURS_TreeNode p) {
+    OPT_RegisterOperand result = BooleanCmp.getResult(P(p)); 
+EMIT_Commutative(IA32_SHR, P(p), result, consumeMO(), IC(31)); 
+EMIT(CPOS(P(p),MIR_BinaryAcc.create(IA32_XOR, result.copyRO(), IC(1))));
+}
+void code87(OPT_BURS_TreeNode p) {
+    BOOLEAN_CMP_INT(P(p), BooleanCmp.getResult(P(p)), BooleanCmp.getCond(P(p)));
+}
+void code88(OPT_BURS_TreeNode p) {
+    pushCOND(BooleanCmp.getCond(P(p)));
+}
+void code89(OPT_BURS_TreeNode p) {
+    BOOLEAN_CMP_INT(P(p), BooleanCmp.getResult(P(p)), BooleanCmp.getCond(P(p)));
+}
+void code90(OPT_BURS_TreeNode p) {
+    pushCOND(BooleanCmp.getCond(P(p)));
+}
+void code91(OPT_BURS_TreeNode p) {
+    BOOLEAN_CMP_INT(P(p), BooleanCmp.getResult(P(p)), BIT_TEST(VR(p),BooleanCmp.getCond(P(p))));
+}
+void code92(OPT_BURS_TreeNode p) {
+    pushCOND(BIT_TEST(VR(p),BooleanCmp.getCond(P(p))));
+}
+void code93(OPT_BURS_TreeNode p) {
+    BOOLEAN_CMP_INT(P(p), BooleanCmp.getResult(P(p)), consumeCOND());
+}
+void code95(OPT_BURS_TreeNode p) {
+    BOOLEAN_CMP_INT(P(p), BooleanCmp.getResult(P(p)), consumeCOND().flipCode());
+}
+void code96(OPT_BURS_TreeNode p) {
+    pushCOND(consumeCOND().flipCode()); // invert already pushed condition
+}
+void code97(OPT_BURS_TreeNode p) {
+    BOOLEAN_CMP_INT(PL(p), BooleanCmp.getResult(P(p)), 
+            consumeMO(), BooleanCmp.getVal2(P(p)), 
+	    BooleanCmp.getCond(P(p)));
+}
+void code98(OPT_BURS_TreeNode p) {
+    pushCOND(BooleanCmp.getCond(P(p))); 
+EMIT(MIR_Compare.mutate(PL(p), IA32_CMP, consumeMO(), BooleanCmp.getVal2(P(p))));
+}
+void code99(OPT_BURS_TreeNode p) {
+    BOOLEAN_CMP_INT(PR(p), BooleanCmp.getResult(P(p)), 
+            BooleanCmp.getVal1(P(p)), consumeMO(), 
+	    BooleanCmp.getCond(P(p)));
+}
+void code100(OPT_BURS_TreeNode p) {
+    pushCOND(BooleanCmp.getCond(P(p))); 
+EMIT(MIR_Compare.mutate(PR(p), IA32_CMP, BooleanCmp.getVal1(P(p)), consumeMO()));
+}
+void code101(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Set.mutate(P(p), IA32_SET__B, MO_S(P(p),B), COND(consumeCOND())));
+}
+void code102(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Set.mutate(P(p), IA32_SET__B, MO_AS(P(p),B_S,B), COND(consumeCOND())));
+}
+void code103(OPT_BURS_TreeNode p) {
+    BOOLEAN_CMP_LONG(P(p), BooleanCmp.getResult(P(p)), BooleanCmp.getVal1(P(p)), BooleanCmp.getVal2(P(p)), BooleanCmp.getCond(P(p)));
+}
+void code104(OPT_BURS_TreeNode p) {
+    pushCOND(BooleanCmp.getCond(P(p))); 
+LONG_CMP(P(p), BooleanCmp.getResult(P(p)), BooleanCmp.getVal1(P(p)), BooleanCmp.getVal2(P(p))); 
+EMIT(CPOS(P(p), MIR_Compare.create(IA32_CMP, BooleanCmp.getResult(P(p)), IC(0))));
+}
+void code105(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Compare.create(IA32_CMP,  CondMove.getVal1(P(p)), CondMove.getVal2(P(p))))); 
+CMOV_MOV(P(p), CondMove.getResult(P(p)), CondMove.getCond(P(p)), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code106(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Test.create(IA32_TEST, CondMove.getVal1(P(p)), CondMove.getVal1(P(p)).copy()))); 
+CMOV_MOV(P(p), CondMove.getResult(P(p)), CondMove.getCond(P(p)), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code107(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_SAR, P(p), CondMove.getResult(P(p)), CondMove.getVal1(P(p)), IC(31));
+}
+void code108(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_SAR, P(p), CondMove.getResult(P(p)), consumeMO(), IC(31));
+}
+void code109(OPT_BURS_TreeNode p) {
+    OPT_RegisterOperand result = CondMove.getResult(P(p)); 
+EMIT_Commutative(IA32_SAR, P(p), result, CondMove.getVal1(P(p)), IC(31)); 
+EMIT(CPOS(P(p),MIR_UnaryAcc.create(IA32_NOT, result.copyRO())));
+}
+void code110(OPT_BURS_TreeNode p) {
+    OPT_RegisterOperand result = CondMove.getResult(P(p)); 
+EMIT_Commutative(IA32_SAR, P(p), result, consumeMO(), IC(31)); 
+EMIT(CPOS(P(p),MIR_UnaryAcc.create(IA32_NOT, result.copyRO())));
+}
+void code111(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Compare.create(IA32_CMP, consumeMO(), CondMove.getVal2(P(p))))); 
+CMOV_MOV(P(p), CondMove.getResult(P(p)), CondMove.getCond(P(p)), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code112(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Compare.create(IA32_CMP, consumeMO(), CondMove.getVal2(P(p))))); 
+CMOV_MOV(P(p), CondMove.getResult(P(p)), CondMove.getCond(P(p)), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code113(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Compare.create(IA32_CMP, consumeMO(), CondMove.getVal2(P(p))))); 
+CMOV_MOV(P(p), CondMove.getResult(P(p)), CondMove.getCond(P(p)), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code114(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Compare.create(IA32_CMP, consumeMO(), CondMove.getVal2(P(p))))); 
+CMOV_MOV(P(p), CondMove.getResult(P(p)), CondMove.getCond(P(p)), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code115(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Compare.create(IA32_CMP, consumeMO(), CondMove.getVal2(P(p))))); 
+CMOV_MOV(P(p), CondMove.getResult(P(p)), CondMove.getCond(P(p)), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code116(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Compare.create(IA32_CMP, CondMove.getVal1(P(p)), consumeMO()))); 
+CMOV_MOV(P(p), CondMove.getResult(P(p)), CondMove.getCond(P(p)), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code117(OPT_BURS_TreeNode p) {
+    CMOV_MOV(P(p), CondMove.getResult(P(p)), consumeCOND(), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code118(OPT_BURS_TreeNode p) {
+    CMOV_MOV(P(p), CondMove.getResult(P(p)), consumeCOND().flipCode(), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code119(OPT_BURS_TreeNode p) {
+    CMOV_MOV(P(p), CondMove.getResult(P(p)), BIT_TEST(VRL(p), CondMove.getCond(P(p))), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code120(OPT_BURS_TreeNode p) {
+    CMOV_MOV(P(p), CondMove.getResult(P(p)), CondMove.getCond(P(p)), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code121(OPT_BURS_TreeNode p) {
+    CMOV_MOV(P(p), CondMove.getResult(P(p)), CondMove.getCond(P(p)), 
+         CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code122(OPT_BURS_TreeNode p) {
+    LCMP_CMOV(P(p), CondMove.getResult(P(p)), CondMove.getVal1(P(p)), CondMove.getVal2(P(p)),
+          CondMove.getCond(P(p)), CondMove.getTrueValue(P(p)), CondMove.getFalseValue(P(p)));
+}
+void code123(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_ADD, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code124(OPT_BURS_TreeNode p) {
+    if (Binary.getVal2(P(p)).isIntConstant()) { 
+ pushAddress(R(Binary.getVal1(P(p))), null, B_S, Offset.fromIntSignExtend(VR(p))); 
+} else { 
+ pushAddress(R(Binary.getVal1(P(p))), R(Binary.getVal2(P(p))), B_S, Offset.zero()); 
+} 
+EMIT_Lea(P(p), Binary.getResult(P(p)), consumeAddress(DW, null, null));
+}
+void code125(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_ADD, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), consumeMO());
+}
+void code126(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_ADD, P(p), Binary.getResult(P(p)), Binary.getVal2(P(p)), consumeMO());
+}
+void code127(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_ADD, P(p), MO_S(P(p), DW), MO_S(P(p), DW), Binary.getVal2(PL(p)));
+}
+void code128(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_ADD, P(p), MO_S(P(p), DW), MO_S(P(p), DW), Binary.getVal1(PL(p)));
+}
+void code129(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_ADD, P(p), MO_AS(P(p), DW_S, DW), MO_AS(P(p), DW_S, DW), Binary.getVal2(PL(p)));
+}
+void code130(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_ADD, P(p), MO_AS(P(p), DW_S, DW), MO_AS(P(p), DW_S, DW), Binary.getVal1(PL(p)));
+}
+void code131(OPT_BURS_TreeNode p) {
+    EMIT_NonCommutative(IA32_SUB, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code132(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_UnaryAcc.create(IA32_NEG, Binary.getResult(P(p))))); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_ADD, Binary.getResult(P(p)), Binary.getVal1(P(p))));
+}
+void code133(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_UnaryAcc.create(IA32_NEG, Binary.getResult(P(p))))); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_ADD, Binary.getResult(P(p)), consumeMO()));
+}
+void code134(OPT_BURS_TreeNode p) {
+    EMIT_NonCommutative(IA32_SUB, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), consumeMO());
+}
+void code135(OPT_BURS_TreeNode p) {
+    EMIT_NonCommutative(IA32_SUB, P(p), Binary.getResult(P(p)), consumeMO(), Binary.getVal2(P(p)));
+}
+void code136(OPT_BURS_TreeNode p) {
+    EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SUB, MO_S(P(p), DW), Binary.getVal2(PL(p))));
+}
+void code137(OPT_BURS_TreeNode p) {
+    OPT_MemoryOperand result = MO_S(P(p), DW); 
+EMIT(CPOS(P(p), MIR_UnaryAcc.create(IA32_NEG, result))); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_ADD, result.copy(), Binary.getVal1(PL(p))));
+}
+void code138(OPT_BURS_TreeNode p) {
+    EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SUB, MO_AS(P(p), DW_S, DW), Binary.getVal2(PL(p))));
+}
+void code139(OPT_BURS_TreeNode p) {
+    OPT_MemoryOperand result = MO_AS(P(p), DW_S, DW); 
+EMIT(CPOS(P(p), MIR_UnaryAcc.create(IA32_NEG, result))); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_ADD, result.copy(), Binary.getVal1(PL(p))));
+}
+void code140(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_IMUL2, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code141(OPT_BURS_TreeNode p) {
+    INT_DIVIDES(P(p), GuardedBinary.getResult(P(p)), GuardedBinary.getVal1(P(p)), 
+	                GuardedBinary.getVal2(P(p)), true);
+}
+void code142(OPT_BURS_TreeNode p) {
+    INT_DIVIDES(P(p), GuardedBinary.getResult(P(p)), GuardedBinary.getVal1(P(p)), 
+	                GuardedBinary.getVal2(P(p)), false);
+}
+void code143(OPT_BURS_TreeNode p) {
+    EMIT_Unary(IA32_NEG, P(p), Unary.getResult(P(p)), Unary.getVal(P(p)));
+}
+void code144(OPT_BURS_TreeNode p) {
+    EMIT_Unary(IA32_NEG, P(p), MO_S(P(p), DW), MO_S(P(p), DW));
+}
+void code145(OPT_BURS_TreeNode p) {
+    EMIT_Unary(IA32_NEG, P(p), MO_AS(P(p), DW_S, DW), MO_AS(P(p), DW_S, DW));
+}
+void code146(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PR(p))))); 
+EMIT_NonCommutative(IA32_SHL, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int));
+}
+void code147(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal2(P(p))))); 
+EMIT_NonCommutative(IA32_SHL, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int));
+}
+void code148(OPT_BURS_TreeNode p) {
+    if (VM.VerifyAssertions) VM._assert((VR(p) & 0x7FFFFFFF) <= 31); if(Binary.getVal2(P(p)).asIntConstant().value == 1) { 
+ EMIT_NonCommutative(IA32_ADD, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal1(P(p)).copy()); 
+} else { 
+ EMIT_NonCommutative(IA32_SHL, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p))); 
+}
+}
+void code149(OPT_BURS_TreeNode p) {
+    pushAddress(null, Binary.getVal1(P(p)).asRegister(), LEA_SHIFT(Binary.getVal2(P(p))), Offset.zero()); 
+EMIT_Lea(P(p), Binary.getResult(P(p)), consumeAddress(DW, null, null));
+}
+void code150(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_AND, P(p), Binary.getResult(P(p)), Binary.getVal1(PL(p)), IC(0xffffffff << VR(p)));
+}
+void code151(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PLR(p))))); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SHL, MO_S(P(p), DW), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int)));
+}
+void code152(OPT_BURS_TreeNode p) {
+    if (VM.VerifyAssertions) VM._assert((VLR(p) & 0x7FFFFFFF) <= 31); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SHL, MO_S(P(p), DW), Binary.getVal2(PL(p))));
+}
+void code153(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PLR(p)))); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SHL, MO_AS(P(p), DW_S, DW), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int)));
+}
+void code154(OPT_BURS_TreeNode p) {
+    EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SHL, MO_AS(P(p), DW_S, DW), Binary.getVal2(PL(p))));
+}
+void code155(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PR(p))))); 
+EMIT_NonCommutative(IA32_SAR, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int));
+}
+void code156(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal2(P(p))))); 
+EMIT_NonCommutative(IA32_SAR, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int));
+}
+void code157(OPT_BURS_TreeNode p) {
+    if (VM.VerifyAssertions) VM._assert((VR(p) & 0x7FFFFFFF) <= 31); 
+EMIT_NonCommutative(IA32_SAR, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code158(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PLR(p))))); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SAR, MO_S(P(p), DW), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int)));
+}
+void code159(OPT_BURS_TreeNode p) {
+    if (VM.VerifyAssertions) VM._assert((VLR(p) & 0x7FFFFFFF) <= 31); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SAR, MO_S(P(p), DW), Binary.getVal2(PL(p))));
+}
+void code160(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PLR(p)))); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SAR, MO_AS(P(p), DW_S, DW), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int)));
+}
+void code161(OPT_BURS_TreeNode p) {
+    EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SAR, MO_AS(P(p), DW_S, DW), Binary.getVal2(PL(p))));
+}
+void code162(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PR(p))))); 
+EMIT_NonCommutative(IA32_SHR, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int));
+}
+void code163(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal2(P(p))))); 
+EMIT_NonCommutative(IA32_SHR, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int));
+}
+void code164(OPT_BURS_TreeNode p) {
+    if (VM.VerifyAssertions) VM._assert((VR(p) & 0x7FFFFFFF) <= 31); 
+EMIT_NonCommutative(IA32_SHR, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code165(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PLR(p))))); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SHR, MO_S(P(p), DW), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int)));
+}
+void code166(OPT_BURS_TreeNode p) {
+    if (VM.VerifyAssertions) VM._assert((VLR(p) & 0x7FFFFFFF) <= 31); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SHR, MO_S(P(p), DW), Binary.getVal2(PL(p))));
+}
+void code167(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PLR(p)))); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SHR, MO_AS(P(p), DW_S, DW), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int)));
+}
+void code168(OPT_BURS_TreeNode p) {
+    EMIT(MIR_BinaryAcc.mutate(P(p), IA32_SHR, MO_AS(P(p), DW_S, DW), Binary.getVal2(PL(p))));
+}
+void code169(OPT_BURS_TreeNode p) {
+    EMIT_NonCommutative(IA32_ROL, P(p), Binary.getResult(P(p)), Binary.getVal1(PL(p)).copy(), IC(VLR(p)&0x1f));
+}
+void code170(OPT_BURS_TreeNode p) {
+    EMIT_NonCommutative(IA32_ROL, P(p), Binary.getResult(P(p)), Binary.getVal1(PL(p)).copy(), IC(VRR(p)&0x1f));
+}
+void code171(OPT_BURS_TreeNode p) {
+    EMIT_NonCommutative(IA32_ROR, P(p), Binary.getResult(P(p)), Binary.getVal1(PL(p)).copy(), IC(1));
+}
+void code172(OPT_BURS_TreeNode p) {
+    EMIT_NonCommutative(IA32_ROR, P(p), Binary.getResult(P(p)), Binary.getVal1(PL(p)).copy(), IC(1));
+}
+void code173(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PLR(p))))); 
+EMIT_NonCommutative(IA32_ROL, P(p), Binary.getResult(P(p)), Binary.getVal1(PL(p)).copy(), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int));
+}
+void code174(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PRR(p))))); 
+EMIT_NonCommutative(IA32_ROL, P(p), Binary.getResult(P(p)), Binary.getVal1(PL(p)).copy(), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int));
+}
+void code175(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PRR(p))))); 
+EMIT_NonCommutative(IA32_ROR, P(p), Binary.getResult(P(p)), Binary.getVal1(PL(p)).copy(), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int));
+}
+void code176(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(getECX(), VM_TypeReference.Int), Binary.getVal1(PLR(p))))); 
+EMIT_NonCommutative(IA32_ROR, P(p), Binary.getResult(P(p)), Binary.getVal1(PL(p)).copy(), new OPT_RegisterOperand(getECX(), VM_TypeReference.Int));
+}
+void code177(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_AND, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code178(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Test.mutate(P(p), IA32_TEST, Binary.getVal1(P(p)), Binary.getVal2(P(p))));
+}
+void code179(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_AND, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), consumeMO());
+}
+void code180(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_AND, P(p), Binary.getResult(P(p)), Binary.getVal2(P(p)), consumeMO());
+}
+void code181(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Test.mutate(P(p), IA32_TEST, consumeMO(), Binary.getVal1(P(p))));
+}
+void code182(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Test.mutate(P(p), IA32_TEST, consumeMO(), Binary.getVal2(P(p))));
+}
+void code183(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_AND, P(p), MO_S(P(p), DW), MO_S(P(p), DW), Binary.getVal2(PL(p)) );
+}
+void code184(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_AND, P(p), MO_S(P(p), DW), MO_S(P(p), DW), Binary.getVal1(PL(p)) );
+}
+void code185(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_AND, P(p), MO_AS(P(p), DW_S, DW), MO_AS(P(p), DW_S, DW), Binary.getVal2(PL(p)) );
+}
+void code186(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_AND, P(p), MO_AS(P(p), DW_S, DW), MO_AS(P(p), DW_S, DW), Binary.getVal1(PL(p)) );
+}
+void code187(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_OR, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code188(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_OR, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), consumeMO() );
+}
+void code189(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_OR, P(p), Binary.getResult(P(p)), Binary.getVal2(P(p)), consumeMO() );
+}
+void code190(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_OR, P(p), MO_S(P(p), DW), MO_S(P(p), DW), Binary.getVal2(PL(p)) );
+}
+void code191(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_OR, P(p), MO_S(P(p), DW), MO_S(P(p), DW), Binary.getVal1(PL(p)) );
+}
+void code192(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_OR, P(p), MO_AS(P(p), DW_S, DW), MO_AS(P(p), DW_S, DW), Binary.getVal2(PL(p)) );
+}
+void code193(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_OR, P(p), MO_AS(P(p), DW_S, DW), MO_AS(P(p), DW_S, DW), Binary.getVal1(PL(p)) );
+}
+void code194(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_XOR, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code195(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_XOR, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), consumeMO() );
+}
+void code196(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_XOR, P(p), Binary.getResult(P(p)), Binary.getVal2(P(p)), consumeMO() );
+}
+void code197(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_XOR, P(p), MO_S(P(p), DW), MO_S(P(p), DW), Binary.getVal2(PL(p)) );
+}
+void code198(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_XOR, P(p), MO_S(P(p), DW), MO_S(P(p), DW), Binary.getVal1(PL(p)) );
+}
+void code199(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_XOR, P(p), MO_AS(P(p), DW_S, DW), MO_AS(P(p), DW_S, DW), Binary.getVal2(PL(p)) );
+}
+void code200(OPT_BURS_TreeNode p) {
+    EMIT_Commutative(IA32_XOR, P(p), MO_AS(P(p), DW_S, DW), MO_AS(P(p), DW_S, DW), Binary.getVal1(PL(p)) );
+}
+void code201(OPT_BURS_TreeNode p) {
+    EMIT_Unary(IA32_NOT, P(p), Unary.getResult(P(p)), Unary.getVal(P(p)));
+}
+void code202(OPT_BURS_TreeNode p) {
+    EMIT_Unary(IA32_NOT, P(p), MO_S(P(p), DW), MO_S(P(p), DW));
+}
+void code203(OPT_BURS_TreeNode p) {
+    EMIT_Unary(IA32_NOT, P(p), MO_AS(P(p), DW_S, DW), MO_AS(P(p), DW_S, DW));
+}
+void code204(OPT_BURS_TreeNode p) {
+    LONG_ADD(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code205(OPT_BURS_TreeNode p) {
+    LONG_SUB(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code206(OPT_BURS_TreeNode p) {
+    LONG_MUL(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code207(OPT_BURS_TreeNode p) {
+    LONG_NEG(P(p), Unary.getResult(P(p)), Unary.getVal(P(p)));
+}
+void code208(OPT_BURS_TreeNode p) {
+    LONG_SHL(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)), false);
+}
+void code209(OPT_BURS_TreeNode p) {
+    if (VM.VerifyAssertions) VM._assert((VRR(p) & 0x7FFFFFFF) <= 63); 
+LONG_SHL(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal1(PR(p)), true);
+}
+void code210(OPT_BURS_TreeNode p) {
+    LONG_SHR(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)), false);
+}
+void code211(OPT_BURS_TreeNode p) {
+    if (VM.VerifyAssertions) VM._assert((VRR(p) & 0x7FFFFFFF) <= 63); 
+LONG_SHR(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal1(PR(p)), true);
+}
+void code212(OPT_BURS_TreeNode p) {
+    LONG_USHR(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)), false);
+}
+void code213(OPT_BURS_TreeNode p) {
+    if (VM.VerifyAssertions) VM._assert((VRR(p) & 0x7FFFFFFF) <= 63); 
+LONG_USHR(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal1(PR(p)), true);
+}
+void code214(OPT_BURS_TreeNode p) {
+    LONG_AND(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code215(OPT_BURS_TreeNode p) {
+    LONG_OR(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code216(OPT_BURS_TreeNode p) {
+    LONG_XOR(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code217(OPT_BURS_TreeNode p) {
+    LONG_NOT(P(p), Unary.getResult(P(p)), Unary.getVal(P(p)));
+}
+void code218(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVSX__B, Unary.getResult(P(p)), Unary.getVal(P(p))));
+}
+void code219(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVSX__B, Unary.getResult(P(p)), consumeMO()));
+}
+void code220(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_S(P(p), B), Unary.getVal(PL(p))));
+}
+void code221(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_AS(P(p), B_S, B), Unary.getVal(PL(p))));
+}
+void code222(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, Unary.getResult(P(p)), Unary.getVal(P(p))))); 
+EMIT(MIR_BinaryAcc.mutate(P(p), IA32_AND, Unary.getResult(P(p)).copyRO(), IC(0xFFFF)));
+}
+void code223(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVZX__W, Unary.getResult(P(p)), setSize(consumeMO(),2)));
+}
+void code224(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_S(P(p), W), Unary.getVal(PL(p))));
+}
+void code225(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_AS(P(p), W_S, W), Unary.getVal(PL(p))));
+}
+void code226(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVSX__W, Unary.getResult(P(p)), Unary.getVal(P(p))));
+}
+void code227(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVSX__W, Unary.getResult(P(p)), consumeMO()));
+}
+void code228(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_S(P(p), W), Unary.getVal(PL(p))));
+}
+void code229(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_AS(P(p), W_S, W), Unary.getVal(PL(p))));
+}
+void code230(OPT_BURS_TreeNode p) {
+    INT_2LONG(P(p), Unary.getResult(P(p)), Unary.getVal(P(p)), true);
+}
+void code231(OPT_BURS_TreeNode p) {
+    INT_2LONG(P(p), Unary.getResult(P(p)), consumeMO(), true);
+}
+void code232(OPT_BURS_TreeNode p) {
+    INT_2LONG(P(p), Binary.getResult(P(p)), Unary.getVal(PL(p)), false);
+}
+void code233(OPT_BURS_TreeNode p) {
+    INT_2LONG(P(p), Binary.getResult(P(p)), consumeMO(), false);
+}
+void code234(OPT_BURS_TreeNode p) {
+    OPT_Register hr = Binary.getResult(P(p)).getRegister(); 
+OPT_Register lr = regpool.getSecondReg(hr); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, new OPT_RegisterOperand(hr, VM_TypeReference.Int), Unary.getVal(PL(p)).copy())); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(lr, VM_TypeReference.Int), IC(0))));
+}
+void code235(OPT_BURS_TreeNode p) {
+    OPT_Register hr = Binary.getResult(P(p)).getRegister(); 
+OPT_Register lr = regpool.getSecondReg(hr); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, new OPT_RegisterOperand(hr, VM_TypeReference.Int), setSize(consumeMO(),4))); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(lr, VM_TypeReference.Int), IC(0))));
+}
+void code236(OPT_BURS_TreeNode p) {
+    OPT_Register lh = regpool.getSecondReg(R(Unary.getVal(P(p))).getRegister()); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Unary.getResult(P(p)), new OPT_RegisterOperand(lh, VM_TypeReference.Int)));
+}
+void code237(OPT_BURS_TreeNode p) {
+    OPT_Register lh = regpool.getSecondReg(R(Unary.getVal(PL(p))).getRegister()); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_S(P(p), DW), new OPT_RegisterOperand(lh, VM_TypeReference.Int)));
+}
+void code238(OPT_BURS_TreeNode p) {
+    OPT_Register lh = regpool.getSecondReg(R(Unary.getVal(PL(p))).getRegister()); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_AS(P(p), DW_S, DW), new OPT_RegisterOperand(lh, VM_TypeReference.Int)));
+}
+void code239(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, Unary.getResult(P(p)), consumeMO()));
+}
+void code240(OPT_BURS_TreeNode p) {
+    OPT_Register uh = Binary.getVal1(PL(p)).asRegister().getRegister(); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Unary.getResult(P(p)), new OPT_RegisterOperand(uh, VM_TypeReference.Int)));
+}
+void code241(OPT_BURS_TreeNode p) {
+    OPT_Register uh = Binary.getVal1(PL(p)).asRegister().getRegister(); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Unary.getResult(P(p)), new OPT_RegisterOperand(uh, VM_TypeReference.Int)));
+}
+void code242(OPT_BURS_TreeNode p) {
+    OPT_MemoryOperand mo = consumeMO(); 
+mo.disp = mo.disp.plus(4); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Unary.getResult(P(p)), mo));
+}
+void code243(OPT_BURS_TreeNode p) {
+    OPT_MemoryOperand mo = consumeMO(); 
+mo.disp = mo.disp.plus(4); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Unary.getResult(P(p)), mo));
+}
+void code244(OPT_BURS_TreeNode p) {
+    OPT_MemoryOperand mo = consumeMO(); 
+mo.disp = mo.disp.plus(4); 
+pushMO(mo);
+}
+void code245(OPT_BURS_TreeNode p) {
+    OPT_MemoryOperand mo = consumeMO(); 
+mo.disp = mo.disp.plus(4); 
+pushMO(mo);
+}
+void code246(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, Move.getResult(P(p)), Move.getVal(P(p))));
+}
+void code247(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, Move.getResult(P(p)), Move.getVal(P(p))));
+}
+void code249(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, Move.getResult(P(p)), Move.getVal(P(p))));
+}
+void code262(OPT_BURS_TreeNode p) {
+    OPT_Register res1 = Move.getResult(P(p)).getRegister();           
+OPT_Register res2 = regpool.getSecondReg(res1);              
+OPT_Register val1 = Move.getVal(P(p)).asRegister().getRegister(); 
+OPT_Register val2 = regpool.getSecondReg(val1);              
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, new OPT_RegisterOperand(res1, VM_TypeReference.Int), 
+                     new OPT_RegisterOperand(val1, VM_TypeReference.Int)));               
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(res2, VM_TypeReference.Int), 
+                     new OPT_RegisterOperand(val2, VM_TypeReference.Int))));
+}
+void code263(OPT_BURS_TreeNode p) {
+    OPT_Register res1 = Move.getResult(P(p)).getRegister();   
+OPT_Register res2 = regpool.getSecondReg(res1);      
+OPT_LongConstantOperand val = LC(Move.getVal(P(p))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, new OPT_RegisterOperand(res1, VM_TypeReference.Int), IC(val.upper32()))); 
+EMIT(CPOS(P(p),MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(res2, VM_TypeReference.Int), IC(val.lower32()))));
+}
+void code264(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, Nullary.getResult(P(p)), new OPT_RegisterOperand(getESI(), VM_TypeReference.Int)));
+}
+void code265(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, Unary.getResult(P(p)), 
+                     MO_BD(Unary.getVal(P(p)), VM_ArchEntrypoints.jtocField.getOffset(), DW, null, null)));
+}
+void code266(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVSX__B, Load.getResult(P(p)), MO_L(P(p), B)));
+}
+void code267(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVSX__B, ALoad.getResult(P(p)), MO_AL(P(p), B_S, B)));
+}
+void code268(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVZX__B, Load.getResult(P(p)), MO_L(P(p), B)));
+}
+void code269(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVZX__B, ALoad.getResult(P(p)), MO_AL(P(p), B_S, B)));
+}
+void code270(OPT_BURS_TreeNode p) {
+    pushMO(setSize(consumeMO(),1));
+}
+void code271(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVZX__B, Binary.getResult(P(p)), setSize(consumeMO(),1)));
+}
+void code272(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVSX__B, Unary.getResult(P(p)), setSize(consumeMO(),1)));
+}
+void code273(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVZX__B, Binary.getResult(P(p)), setSize(consumeMO(),1)));
+}
+void code274(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVSX__W, Load.getResult(P(p)), MO_L(P(p), W)));
+}
+void code275(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVSX__W, ALoad.getResult(P(p)), MO_AL(P(p), W_S, W)));
+}
+void code276(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVZX__W, Load.getResult(P(p)), MO_L(P(p), W)));
+}
+void code277(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVZX__W, ALoad.getResult(P(p)), MO_AL(P(p), W_S, W)));
+}
+void code278(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVZX__W, Binary.getResult(P(p)), setSize(consumeMO(),2)));
+}
+void code279(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVZX__W, Unary.getResult(P(p)), setSize(consumeMO(),2)));
+}
+void code280(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVSX__W, Unary.getResult(P(p)), setSize(consumeMO(),2)));
+}
+void code281(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Unary.mutate(P(p), IA32_MOVZX__W, Binary.getResult(P(p)), setSize(consumeMO(),2)));
+}
+void code282(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, Load.getResult(P(p)), MO_L(P(p), DW)));
+}
+void code283(OPT_BURS_TreeNode p) {
+    augmentAddress(Load.getAddress(P(p))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Load.getResult(P(p)), 
+		     consumeAddress(DW, Load.getLocation(P(p)), Load.getGuard(P(p)))));
+}
+void code284(OPT_BURS_TreeNode p) {
+    augmentAddress(Load.getOffset(P(p))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Load.getResult(P(p)), 
+	             consumeAddress(DW, Load.getLocation(P(p)), Load.getGuard(P(p)))));
+}
+void code285(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Load.getResult(P(p)), 
+	             consumeAddress(DW, Load.getLocation(P(p)), Load.getGuard(P(p)))));
+}
+void code286(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Load.getResult(P(p)), 
+	             consumeAddress(DW, Load.getLocation(P(p)), Load.getGuard(P(p)))));
+}
+void code287(OPT_BURS_TreeNode p) {
+    augmentAddress(Load.getOffset(P(p))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Load.getResult(P(p)), 
+	             consumeAddress(DW, Load.getLocation(P(p)), Load.getGuard(P(p)))));
+}
+void code288(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, ALoad.getResult(P(p)), MO_AL(P(p), DW_S, DW)));
+}
+void code289(OPT_BURS_TreeNode p) {
+    OPT_RegisterOperand hres = Load.getResult(P(p)); 
+OPT_RegisterOperand lres = new OPT_RegisterOperand(regpool.getSecondReg(hres.getRegister()), VM_TypeReference.Int); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, hres, MO_L(P(p), DW, DW).copy()))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, lres, MO_L(P(p), DW)));
+}
+void code290(OPT_BURS_TreeNode p) {
+    OPT_RegisterOperand hres = ALoad.getResult(P(p)); 
+OPT_RegisterOperand lres = new OPT_RegisterOperand(regpool.getSecondReg(hres.getRegister()), VM_TypeReference.Int); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, hres, MO_AL(P(p), QW_S, DW, DW).copy()))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, lres, MO_AL(P(p), QW_S, DW)));
+}
+void code291(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, Prepare.getResult(P(p)), 
+	             MO(Prepare.getAddress(P(p)), Prepare.getOffset(P(p)), DW, 
+	                Prepare.getLocation(P(p)), Prepare.getGuard(P(p)))));
+}
+void code292(OPT_BURS_TreeNode p) {
+    augmentAddress(Prepare.getAddress(P(p))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Prepare.getResult(P(p)), 
+		     consumeAddress(DW, Prepare.getLocation(P(p)), Prepare.getGuard(P(p)))));
+}
+void code293(OPT_BURS_TreeNode p) {
+    augmentAddress(Prepare.getOffset(P(p))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Prepare.getResult(P(p)), 
+	             consumeAddress(DW, Prepare.getLocation(P(p)), Prepare.getGuard(P(p)))));
+}
+void code294(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Prepare.getResult(P(p)), 
+	             consumeAddress(DW, Prepare.getLocation(P(p)), Prepare.getGuard(P(p)))));
+}
+void code295(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Prepare.getResult(P(p)), 
+	             consumeAddress(DW, Prepare.getLocation(P(p)), Prepare.getGuard(P(p)))));
+}
+void code296(OPT_BURS_TreeNode p) {
+    augmentAddress(Prepare.getOffset(P(p))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Prepare.getResult(P(p)), 
+	             consumeAddress(DW, Prepare.getLocation(P(p)), Prepare.getGuard(P(p)))));
+}
+void code297(OPT_BURS_TreeNode p) {
+    augmentAddress(Prepare.getAddress(P(p))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, Prepare.getResult(P(p)), 
+	             consumeAddress(DW, Prepare.getLocation(P(p)), Prepare.getGuard(P(p)))));
+}
+void code298(OPT_BURS_TreeNode p) {
+    OPT_RegisterOperand hres = Prepare.getResult(P(p)); 
+OPT_MemoryOperand hmo = MO(Prepare.getAddress(P(p)), Prepare.getOffset(P(p)), DW, 
+                           Prepare.getLocation(P(p)), Prepare.getGuard(P(p)), DW); 
+OPT_RegisterOperand lres = new OPT_RegisterOperand(regpool.getSecondReg(hres.getRegister()), VM_TypeReference.Int); 
+OPT_MemoryOperand lmo = MO(Prepare.getAddress(P(p)), Prepare.getOffset(P(p)), DW, 
+                           Prepare.getLocation(P(p)), Prepare.getGuard(P(p))); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, hres, hmo))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, lres, lmo));
+}
+void code299(OPT_BURS_TreeNode p) {
+    ATTEMPT(Attempt.getResult(P(p)), 
+              MO(Attempt.getAddress(P(p)), Attempt.getOffset(P(p)), DW, Attempt.getLocation(P(p)), Attempt.getGuard(P(p))), 
+              Attempt.getOldValue(P(p)), Attempt.getNewValue(P(p)));
+}
+void code300(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getAddress(P(p))); 
+ATTEMPT(Attempt.getResult(P(p)), 
+              consumeAddress(DW, Attempt.getLocation(P(p)), Attempt.getGuard(P(p))), 
+              Attempt.getOldValue(P(p)), Attempt.getNewValue(P(p)));
+}
+void code301(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getOffset(P(p))); 
+ATTEMPT(Attempt.getResult(P(p)), 
+              consumeAddress(DW, Attempt.getLocation(P(p)), Attempt.getGuard(P(p))), 
+              Attempt.getOldValue(P(p)), Attempt.getNewValue(P(p)));
+}
+void code302(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+ATTEMPT(Attempt.getResult(P(p)), 
+              consumeAddress(DW, Attempt.getLocation(P(p)), Attempt.getGuard(P(p))), 
+              Attempt.getOldValue(P(p)), Attempt.getNewValue(P(p)));
+}
+void code303(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+ATTEMPT(Attempt.getResult(P(p)), 
+              consumeAddress(DW, Attempt.getLocation(P(p)), Attempt.getGuard(P(p))), 
+              Attempt.getOldValue(P(p)), Attempt.getNewValue(P(p)));
+}
+void code304(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getOffset(P(p))); 
+ATTEMPT(Attempt.getResult(P(p)), 
+              consumeAddress(DW, Attempt.getLocation(P(p)), Attempt.getGuard(P(p))), 
+              Attempt.getOldValue(P(p)), Attempt.getNewValue(P(p)));
+}
+void code305(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getAddress(P(p))); 
+ATTEMPT(Attempt.getResult(P(p)), 
+              consumeAddress(DW, Attempt.getLocation(P(p)), Attempt.getGuard(P(p))), 
+              Attempt.getOldValue(P(p)), Attempt.getNewValue(P(p)));
+}
+void code306(OPT_BURS_TreeNode p) {
+    ATTEMPT_IFCMP(MO(Attempt.getAddress(PL(p)), Attempt.getOffset(PL(p)), DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)).flipCode(), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code307(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getAddress(PL(p))); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)).flipCode(), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code308(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getOffset(PL(p))); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)).flipCode(), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code309(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)).flipCode(), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code310(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)).flipCode(), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code311(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getOffset(PL(p))); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)).flipCode(), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code312(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getAddress(PL(p))); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)).flipCode(), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code313(OPT_BURS_TreeNode p) {
+    ATTEMPT_IFCMP(MO(Attempt.getAddress(PL(p)), Attempt.getOffset(PL(p)), DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code314(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getAddress(PL(p))); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code315(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getOffset(PL(p))); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code316(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code317(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code318(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getOffset(PL(p))); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code319(OPT_BURS_TreeNode p) {
+    augmentAddress(Attempt.getAddress(PL(p))); 
+ATTEMPT_IFCMP(consumeAddress(DW, Attempt.getLocation(PL(p)), Attempt.getGuard(PL(p))), 
+	            Attempt.getOldValue(PL(p)), Attempt.getNewValue(PL(p)), 
+		    IfCmp.getCond(P(p)), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p)));
+}
+void code320(OPT_BURS_TreeNode p) {
+    ATTEMPT_LONG(Attempt.getResult(P(p)), 
+              MO(Attempt.getAddress(P(p)), Attempt.getOffset(P(p)), DW, Attempt.getLocation(P(p)), Attempt.getGuard(P(p))), 
+              Attempt.getOldValue(P(p)), Attempt.getNewValue(P(p)));
+}
+void code321(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_S(P(p), B), Store.getValue(P(p))));
+}
+void code322(OPT_BURS_TreeNode p) {
+    OPT_Register tmp = regpool.getInteger(); 
+EMIT(CPOS(PL(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), consumeMO()))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_S(P(p), B), new OPT_RegisterOperand(tmp, VM_TypeReference.Int)));
+}
+void code323(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_AS(P(p), B_S, B), AStore.getValue(P(p))));
+}
+void code324(OPT_BURS_TreeNode p) {
+    OPT_Register tmp = regpool.getInteger(); 
+EMIT(CPOS(PL(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), consumeMO()))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_AS(P(p), B_S, B), new OPT_RegisterOperand(tmp, VM_TypeReference.Int)));
+}
+void code325(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_S(P(p), W), Store.getValue(P(p))));
+}
+void code326(OPT_BURS_TreeNode p) {
+    OPT_Register tmp = regpool.getInteger(); 
+EMIT(CPOS(PL(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), consumeMO()))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_S(P(p), W), new OPT_RegisterOperand(tmp, VM_TypeReference.Int)));
+}
+void code327(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_AS(P(p), W_S, W), AStore.getValue(P(p))));
+}
+void code328(OPT_BURS_TreeNode p) {
+    OPT_Register tmp = regpool.getInteger(); 
+EMIT(CPOS(PL(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), consumeMO()))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_AS(P(p), W_S, W), new OPT_RegisterOperand(tmp, VM_TypeReference.Int)));
+}
+void code329(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_S(P(p), DW), Store.getValue(P(p))));
+}
+void code330(OPT_BURS_TreeNode p) {
+    augmentAddress(Store.getAddress(P(p))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, 
+                     consumeAddress(DW, Store.getLocation(P(p)), Store.getGuard(P(p))), 
+		     Store.getValue(P(p))));
+}
+void code331(OPT_BURS_TreeNode p) {
+    augmentAddress(Store.getOffset(P(p))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, 
+                     consumeAddress(DW, Store.getLocation(P(p)), Store.getGuard(P(p))), 
+		     Store.getValue(P(p))));
+}
+void code332(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV,  
+                    consumeAddress(DW, Store.getLocation(P(p)), Store.getGuard(P(p))), 
+                    Store.getValue(P(p))));
+}
+void code333(OPT_BURS_TreeNode p) {
+    combineAddresses(); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV,  
+                    consumeAddress(DW, Store.getLocation(P(p)), Store.getGuard(P(p))), 
+                    Store.getValue(P(p))));
+}
+void code334(OPT_BURS_TreeNode p) {
+    augmentAddress(Store.getOffset(P(p))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV,  
+	             consumeAddress(DW, Store.getLocation(P(p)), Store.getGuard(P(p))), 
+		     Store.getValue(P(p))));
+}
+void code335(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_AS(P(p), DW_S, DW), AStore.getValue(P(p))));
+}
+void code336(OPT_BURS_TreeNode p) {
+    OPT_RegisterOperand hval = (OPT_RegisterOperand)Store.getValue(P(p)); 
+OPT_RegisterOperand lval = new OPT_RegisterOperand(regpool.getSecondReg(hval.getRegister()), VM_TypeReference.Int); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, MO_S(P(p), DW, DW).copy(), hval))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_S(P(p), DW), lval));
+}
+void code337(OPT_BURS_TreeNode p) {
+    OPT_LongConstantOperand val = LC(Store.getValue(P(p))); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, MO_S(P(p), DW, DW).copy(), IC(val.upper32())))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_S(P(p), DW), IC(val.lower32())));
+}
+void code338(OPT_BURS_TreeNode p) {
+    OPT_RegisterOperand hval = (OPT_RegisterOperand)AStore.getValue(P(p)); 
+OPT_RegisterOperand lval = new OPT_RegisterOperand(regpool.getSecondReg(hval.getRegister()), VM_TypeReference.Int); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, MO_AS(P(p), QW_S, DW, DW).copy(), hval))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_AS(P(p), QW_S, DW), lval));
+}
+void code339(OPT_BURS_TreeNode p) {
+    OPT_LongConstantOperand val = LC(AStore.getValue(P(p))); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, MO_AS(P(p), QW_S, DW, DW).copy(), IC(val.upper32())))); 
+EMIT(MIR_Move.mutate(P(p), IA32_MOV, MO_AS(P(p), QW_S, DW), IC(val.lower32())));
+}
+void code340(OPT_BURS_TreeNode p) {
+    IFCMP(P(p), IfCmp.getGuardResult(P(p)), IfCmp.getVal1(P(p)), IfCmp.getVal2(P(p)), IfCmp.getCond(P(p)));
+}
+void code341(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), Move.create(GUARD_MOVE, IfCmp.getGuardResult(P(p)), new OPT_TrueGuardOperand()))); 
+EMIT(CPOS(P(p), MIR_Test.create(IA32_TEST, IfCmp.getVal1(P(p)), IfCmp.getVal1(P(p)).copy()))); 
+EMIT(MIR_CondBranch.mutate(P(p), IA32_JCC, COND(IfCmp.getCond(P(p))), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p))));
+}
+void code342(OPT_BURS_TreeNode p) {
+    IFCMP(P(p), IfCmp.getGuardResult(P(p)), consumeMO(), IfCmp.getVal2(P(p)), IfCmp.getCond(P(p)));
+}
+void code343(OPT_BURS_TreeNode p) {
+    IFCMP(P(p), IfCmp.getGuardResult(P(p)), consumeMO(), IfCmp.getVal2(P(p)), IfCmp.getCond(P(p)));
+}
+void code344(OPT_BURS_TreeNode p) {
+    IFCMP(P(p), IfCmp.getGuardResult(P(p)), IfCmp.getVal1(P(p)), consumeMO(), IfCmp.getCond(P(p)));
+}
+void code345(OPT_BURS_TreeNode p) {
+    IFCMP(P(p), IfCmp.getGuardResult(P(p)), consumeMO(), IfCmp.getVal2(P(p)), IfCmp.getCond(P(p)));
+}
+void code346(OPT_BURS_TreeNode p) {
+    IFCMP(P(p), IfCmp.getGuardResult(P(p)), consumeMO(), IfCmp.getVal2(P(p)), IfCmp.getCond(P(p)));
+}
+void code347(OPT_BURS_TreeNode p) {
+    IFCMP(P(p), IfCmp.getGuardResult(P(p)), IfCmp.getVal1(P(p)), consumeMO(), IfCmp.getCond(P(p)));
+}
+void code348(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), Move.create(GUARD_MOVE, IfCmp.getGuardResult(P(p)), new OPT_TrueGuardOperand()))); 
+EMIT(MIR_CondBranch.mutate(P(p), IA32_JCC, COND(consumeCOND()), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p))));
+}
+void code349(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), Move.create(GUARD_MOVE, IfCmp.getGuardResult(P(p)), new OPT_TrueGuardOperand()))); 
+EMIT(MIR_CondBranch.mutate(P(p), IA32_JCC, COND(consumeCOND().flipCode()), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p))));
+}
+void code350(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), Move.create(GUARD_MOVE, IfCmp.getGuardResult(P(p)), new OPT_TrueGuardOperand()))); 
+EMIT(MIR_CondBranch.mutate(P(p), IA32_JCC, COND(IfCmp.getCond(P(p))), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p))));
+}
+void code351(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), Move.create(GUARD_MOVE, IfCmp.getGuardResult(P(p)), new OPT_TrueGuardOperand()))); 
+EMIT(MIR_CondBranch.mutate(P(p), IA32_JCC, COND(IfCmp.getCond(P(p))), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p))));
+}
+void code352(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), Move.create(GUARD_MOVE, IfCmp.getGuardResult(P(p)), new OPT_TrueGuardOperand()))); 
+EMIT(MIR_CondBranch.mutate(P(p), IA32_JCC, COND(BIT_TEST(VR(p), IfCmp.getCond(P(p)))), IfCmp.getTarget(P(p)), IfCmp.getBranchProfile(P(p))));
+}
+void code353(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), Move.create(GUARD_MOVE, IfCmp2.getGuardResult(P(p)), new OPT_TrueGuardOperand()))); 
+EMIT(CPOS(P(p), MIR_Compare.create(IA32_CMP, IfCmp2.getVal1(P(p)), IfCmp2.getVal2(P(p))))); 
+EMIT(MIR_CondBranch2.mutate(P(p), IA32_JCC2,                                  
+	                    COND(IfCmp2.getCond1(P(p))), IfCmp2.getTarget1(P(p)),IfCmp2.getBranchProfile1(P(p)), 
+	                    COND(IfCmp2.getCond2(P(p))), IfCmp2.getTarget2(P(p)), IfCmp2.getBranchProfile2(P(p))));
+}
+void code354(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), Move.create(GUARD_MOVE, IfCmp2.getGuardResult(P(p)), new OPT_TrueGuardOperand()))); 
+EMIT(CPOS(P(p), MIR_Compare.create(IA32_CMP, consumeMO(), IfCmp2.getVal2(P(p))))); 
+EMIT(MIR_CondBranch2.mutate(P(p), IA32_JCC2,                                  
+	                    COND(IfCmp2.getCond1(P(p))), IfCmp2.getTarget1(P(p)),IfCmp2.getBranchProfile1(P(p)), 
+	                    COND(IfCmp2.getCond2(P(p))), IfCmp2.getTarget2(P(p)), IfCmp2.getBranchProfile2(P(p))));
+}
+void code355(OPT_BURS_TreeNode p) {
+    EMIT(CPOS(P(p), Move.create(GUARD_MOVE, IfCmp2.getGuardResult(P(p)), new OPT_TrueGuardOperand()))); 
+EMIT(CPOS(P(p), MIR_Compare.create(IA32_CMP, IfCmp2.getVal1(P(p)), consumeMO()))); 
+EMIT(MIR_CondBranch2.mutate(P(p), IA32_JCC2,                                  
+	                    COND(IfCmp2.getCond1(P(p))), IfCmp2.getTarget1(P(p)),IfCmp2.getBranchProfile1(P(p)), 
+	                    COND(IfCmp2.getCond2(P(p))), IfCmp2.getTarget2(P(p)), IfCmp2.getBranchProfile2(P(p))));
+}
+void code356(OPT_BURS_TreeNode p) {
+    EMIT(P(p)); //  Leave for OPT_ComplexLIR2MIRExpansion
+}
+void code357(OPT_BURS_TreeNode p) {
+    LONG_CMP(P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code358(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Branch.mutate(P(p), IA32_JMP, Goto.getTarget(P(p))));
+}
+void code359(OPT_BURS_TreeNode p) {
+    EMIT(MIR_CacheOp.mutate(P(p), IA32_PREFETCHNTA, R(CacheOp.getRef(P(p)))));
+}
+void code360(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Empty.mutate(P(p), IA32_PAUSE));
+}
+void code361(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Return.mutate(P(p), IA32_RET, null, null, null));
+}
+void code362(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Return.mutate(P(p), IA32_RET, null, Return.getVal(P(p)), null));
+}
+void code363(OPT_BURS_TreeNode p) {
+    OPT_RegisterOperand ret = R(Return.getVal(P(p)));            
+OPT_RegisterOperand ret2 = null;	                            
+if (ret.getType().isLongType()) {                                 
+  ret.setType(VM_TypeReference.Int);                           
+  ret2 = new OPT_RegisterOperand(regpool.getSecondReg(ret.getRegister()), VM_TypeReference.Int); 
+}                                                            
+EMIT(MIR_Return.mutate(P(p), IA32_RET, null, ret, ret2));
+}
+void code364(OPT_BURS_TreeNode p) {
+    OPT_LongConstantOperand val = LC(Return.getVal(P(p))); 
+EMIT(MIR_Return.mutate(P(p), IA32_RET, null, IC(val.upper32()), IC(val.lower32())));
+}
+void code365(OPT_BURS_TreeNode p) {
+    CALL(P(p), Call.getAddress(P(p)));
+}
+void code366(OPT_BURS_TreeNode p) {
+    CALL(P(p), Call.getAddress(P(p)));
+}
+void code367(OPT_BURS_TreeNode p) {
+    CALL(P(p), MO_L(PL(p), DW));
+}
+void code368(OPT_BURS_TreeNode p) {
+    SYSCALL(P(p), Call.getAddress(P(p)));
+}
+void code369(OPT_BURS_TreeNode p) {
+    SYSCALL(P(p), MO_L(PL(p), DW));
+}
+void code370(OPT_BURS_TreeNode p) {
+    GET_EXCEPTION_OBJECT(P(p));
+}
+void code371(OPT_BURS_TreeNode p) {
+    SET_EXCEPTION_OBJECT(P(p));
+}
+void code372(OPT_BURS_TreeNode p) {
+    GET_TIME_BASE(P(p), Nullary.getResult(P(p)));
+}
+void code373(OPT_BURS_TreeNode p) {
+    OSR(burs, P(p));
+}
+void code374(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Test.mutate(P(p), IA32_BT, Binary.getVal1(PL(p)).copy(), Binary.getVal1(PLR(p)).copy()));
+}
+void code375(OPT_BURS_TreeNode p) {
+    OPT_Register tmp = regpool.getInteger(); 
+if (VM.VerifyAssertions) VM._assert((VLRR(p) & 0x7FFFFFFF) <= 31); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), Binary.getVal1(PLR(p))))); 
+EMIT(CPOS(P(p), MIR_BinaryAcc.create(IA32_AND, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), IC(VLRR(p))))); 
+EMIT(MIR_Test.mutate(P(p), IA32_BT, consumeMO(), new OPT_RegisterOperand(tmp, VM_TypeReference.Int)));
+}
+void code376(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Test.mutate(P(p), IA32_BT, Binary.getVal1(PL(p)).copy(), IC(VLR(p))));
+}
+void code377(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Test.mutate(P(p), IA32_BT, Binary.getVal1(PL(p)).copy(), Binary.getVal1(PLR(p)).copy()));
+}
+void code378(OPT_BURS_TreeNode p) {
+    OPT_Register tmp = regpool.getInteger(); 
+if (VM.VerifyAssertions) VM._assert((VLRR(p) & 0x7FFFFFFF) <= 31); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), Binary.getVal1(PLR(p))))); 
+EMIT(CPOS(P(p), MIR_BinaryAcc.create(IA32_AND, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), IC(VLRR(p))))); 
+EMIT(MIR_Test.mutate(P(p), IA32_BT, consumeMO(), new OPT_RegisterOperand(tmp, VM_TypeReference.Int)));
+}
+void code379(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Test.mutate(P(p), IA32_BT, Binary.getVal1(PL(p)).copy(), IC(VLR(p))));
+}
+void code380(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Test.mutate(P(p), IA32_BT, Binary.getVal2(P(p)), Binary.getVal1(PLR(p)).copy()));
+}
+void code381(OPT_BURS_TreeNode p) {
+    OPT_Register tmp = regpool.getInteger(); 
+if (VM.VerifyAssertions) VM._assert((VLRR(p) & 0x7FFFFFFF) <= 31); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), Binary.getVal1(PLR(p))))); 
+EMIT(CPOS(P(p), MIR_BinaryAcc.create(IA32_AND, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), IC(VLRR(p))))); 
+EMIT(MIR_Test.mutate(P(p), IA32_BT, consumeMO(), new OPT_RegisterOperand(tmp, VM_TypeReference.Int)));
+}
+void code382(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Test.mutate(P(p), IA32_BT, Binary.getVal1(P(p)), Binary.getVal1(PRR(p)).copy()));
+}
+void code383(OPT_BURS_TreeNode p) {
+    OPT_Register tmp = regpool.getInteger(); 
+if (VM.VerifyAssertions) VM._assert((VRRR(p) & 0x7FFFFFFF) <= 31); 
+EMIT(CPOS(P(p), MIR_Move.create(IA32_MOV, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), Binary.getVal1(PRR(p))))); 
+EMIT(CPOS(P(p), MIR_BinaryAcc.create(IA32_AND, new OPT_RegisterOperand(tmp, VM_TypeReference.Int), IC(VRRR(p))))); 
+EMIT(MIR_Test.mutate(P(p), IA32_BT, consumeMO(), new OPT_RegisterOperand(tmp, VM_TypeReference.Int)));
+}
+void code384(OPT_BURS_TreeNode p) {
+    SSE2_COP(IA32_ADDSS, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code385(OPT_BURS_TreeNode p) {
+    SSE2_COP(IA32_ADDSS, P(p), Binary.getResult(P(p)), Binary.getVal2(P(p)), Binary.getVal1(P(p)));
+}
+void code386(OPT_BURS_TreeNode p) {
+    SSE2_NCOP(IA32_SUBSS, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code387(OPT_BURS_TreeNode p) {
+    SSE2_COP(IA32_MULSS, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code388(OPT_BURS_TreeNode p) {
+    SSE2_COP(IA32_MULSS, P(p), Binary.getResult(P(p)), Binary.getVal2(P(p)), Binary.getVal1(P(p)));
+}
+void code389(OPT_BURS_TreeNode p) {
+    SSE2_NCOP(IA32_DIVSS, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code390(OPT_BURS_TreeNode p) {
+    SSE2_NEG(IA32_XORPS, IA32_SUBSS, P(p), Unary.getResult(P(p)), Unary.getVal(P(p)));
+}
+void code391(OPT_BURS_TreeNode p) {
+    SSE2_COP(IA32_ADDSD, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code392(OPT_BURS_TreeNode p) {
+    SSE2_COP(IA32_ADDSD, P(p), Binary.getResult(P(p)), Binary.getVal2(P(p)), Binary.getVal1(P(p)));
+}
+void code393(OPT_BURS_TreeNode p) {
+    SSE2_NCOP(IA32_SUBSD, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code394(OPT_BURS_TreeNode p) {
+    SSE2_COP(IA32_MULSD, P(p), Binary.getResult(P(p)), Binary.getVal2(P(p)), Binary.getVal1(P(p)));
+}
+void code395(OPT_BURS_TreeNode p) {
+    SSE2_NCOP(IA32_DIVSD, P(p), Binary.getResult(P(p)), Binary.getVal1(P(p)), Binary.getVal2(P(p)));
+}
+void code396(OPT_BURS_TreeNode p) {
+    SSE2_NEG(IA32_XORPD, IA32_SUBSD, P(p), Unary.getResult(P(p)), Unary.getVal(P(p)));
+}
+void code397(OPT_BURS_TreeNode p) {
+    SSE2_X87_REM(P(p));
+}
+void code398(OPT_BURS_TreeNode p) {
+    SSE2_X87_REM(P(p));
+}
+void code399(OPT_BURS_TreeNode p) {
+    SSE2_X87_FROMLONG(P(p));
+}
+void code400(OPT_BURS_TreeNode p) {
+    SSE2_X87_FROMLONG(P(p));
+}
+void code401(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOVSS, Move.getResult(P(p)), Move.getVal(P(p))));
+}
+void code402(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOVSD, Move.getResult(P(p)), Move.getVal(P(p))));
+}
+void code403(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOVSD, Load.getResult(P(p)), MO_L(P(p), QW)));
+}
+void code404(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOVSD, ALoad.getResult(P(p)), MO_AL(P(p), QW_S, QW)));
+}
+void code405(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOVSS, Load.getResult(P(p)), MO_L(P(p), DW)));
+}
+void code406(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOVSS, ALoad.getResult(P(p)), MO_AL(P(p), DW_S, DW)));
+}
+void code407(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOVSD, MO_S(P(p), QW), Store.getValue(P(p))));
+}
+void code408(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOVSD, MO_AS(P(p), QW_S, QW), AStore.getValue(P(p))));
+}
+void code409(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOVSS, MO_S(P(p), DW), Store.getValue(P(p))));
+}
+void code410(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Move.mutate(P(p), IA32_MOVSS, MO_AS(P(p), DW_S, DW), AStore.getValue(P(p))));
+}
+void code411(OPT_BURS_TreeNode p) {
+    SSE2_CONV(IA32_CVTSI2SS, P(p), Unary.getResult(P(p)), Unary.getVal(P(p)));
+}
+void code412(OPT_BURS_TreeNode p) {
+    SSE2_CONV(IA32_CVTSI2SD, P(p), Unary.getResult(P(p)), Unary.getVal(P(p)));
+}
+void code413(OPT_BURS_TreeNode p) {
+    SSE2_CONV(IA32_CVTSS2SD, P(p), Unary.getResult(P(p)), Unary.getVal(P(p)));
+}
+void code414(OPT_BURS_TreeNode p) {
+    SSE2_CONV(IA32_CVTSD2SS, P(p), Unary.getResult(P(p)), Unary.getVal(P(p)));
+}
+void code415(OPT_BURS_TreeNode p) {
+    EMIT(P(p)); /* leave for complex operators */
+}
+void code416(OPT_BURS_TreeNode p) {
+    EMIT(P(p)); /* leave for complex operators */
+}
+void code417(OPT_BURS_TreeNode p) {
+    EMIT(P(p)); /* leave for complex operators */
+}
+void code418(OPT_BURS_TreeNode p) {
+    EMIT(P(p)); /* leave for complex operators */
+}
+void code419(OPT_BURS_TreeNode p) {
+    SSE2_FPR2GPR_32(P(p));
+}
+void code420(OPT_BURS_TreeNode p) {
+    SSE2_FPR2GPR_64(P(p));
+}
+void code421(OPT_BURS_TreeNode p) {
+    SSE2_GPR2FPR_32(P(p));
+}
+void code422(OPT_BURS_TreeNode p) {
+    SSE2_GPR2FPR_64(P(p));
+}
+void code423(OPT_BURS_TreeNode p) {
+    SSE2_FPCONSTANT(P(p));
+}
+void code424(OPT_BURS_TreeNode p) {
+    EMIT(MIR_Empty.mutate(P(p), IA32_FNINIT));
+}
+void code425(OPT_BURS_TreeNode p) {
+    SSE2_IFCMP(IA32_UCOMISS, P(p), IfCmp.getClearVal1(P(p)), IfCmp.getClearVal2(P(p)));
+}
+void code426(OPT_BURS_TreeNode p) {
+    SSE2_IFCMP(IA32_UCOMISD, P(p), IfCmp.getClearVal1(P(p)), IfCmp.getClearVal2(P(p)));
+}
+
+public void code(OPT_BURS_TreeNode p, int  n, int ruleno) {
+  switch(ruleno) {
+  case 16: code16(p); break;
+  case 17: code17(p); break;
+  case 18: code18(p); break;
+  case 19: code19(p); break;
+  case 22: code22(p); break;
+  case 23: code23(p); break;
+  case 24: code24(p); break;
+  case 25: code25(p); break;
+  case 28: code28(p); break;
+  case 29: code29(p); break;
+  case 34: code34(p); break;
+  case 35: code35(p); break;
+  case 38: code38(p); break;
+  case 39: code39(p); break;
+  case 40: code40(p); break;
+  case 41: code41(p); break;
+  case 42: code42(p); break;
+  case 43: code43(p); break;
+  case 44: code44(p); break;
+  case 45: code45(p); break;
+  case 46: code46(p); break;
+  case 47: code47(p); break;
+  case 48: code48(p); break;
+  case 49: code49(p); break;
+  case 50: code50(p); break;
+  case 51: code51(p); break;
+  case 52: code52(p); break;
+  case 53: code53(p); break;
+  case 54: code54(p); break;
+  case 55: code55(p); break;
+  case 56: code56(p); break;
+  case 57: code57(p); break;
+  case 58: code58(p); break;
+  case 59: code59(p); break;
+  case 60: code60(p); break;
+  case 61: code61(p); break;
+  case 62: code62(p); break;
+  case 64: code64(p); break;
+  case 65: code65(p); break;
+  case 66: code66(p); break;
+  case 67: code67(p); break;
+  case 68: code68(p); break;
+  case 69: code69(p); break;
+  case 70: code70(p); break;
+  case 71: code71(p); break;
+  case 72: code72(p); break;
+  case 73: code73(p); break;
+  case 74: code74(p); break;
+  case 75: code75(p); break;
+  case 76: code76(p); break;
+  case 77: code77(p); break;
+  case 78: code78(p); break;
+  case 79: code79(p); break;
+  case 80: code80(p); break;
+  case 81: code81(p); break;
+  case 82: code82(p); break;
+  case 83: code83(p); break;
+  case 84: code84(p); break;
+  case 85: code85(p); break;
+  case 86: code86(p); break;
+  case 87: code87(p); break;
+  case 88: code88(p); break;
+  case 89: code89(p); break;
+  case 90: code90(p); break;
+  case 91: code91(p); break;
+  case 92: code92(p); break;
+  case 93: code93(p); break;
+  case 95: code95(p); break;
+  case 96: code96(p); break;
+  case 97: code97(p); break;
+  case 98: code98(p); break;
+  case 99: code99(p); break;
+  case 100: code100(p); break;
+  case 101: code101(p); break;
+  case 102: code102(p); break;
+  case 103: code103(p); break;
+  case 104: code104(p); break;
+  case 105: code105(p); break;
+  case 106: code106(p); break;
+  case 107: code107(p); break;
+  case 108: code108(p); break;
+  case 109: code109(p); break;
+  case 110: code110(p); break;
+  case 111: code111(p); break;
+  case 112: code112(p); break;
+  case 113: code113(p); break;
+  case 114: code114(p); break;
+  case 115: code115(p); break;
+  case 116: code116(p); break;
+  case 117: code117(p); break;
+  case 118: code118(p); break;
+  case 119: code119(p); break;
+  case 120: code120(p); break;
+  case 121: code121(p); break;
+  case 122: code122(p); break;
+  case 123: code123(p); break;
+  case 124: code124(p); break;
+  case 125: code125(p); break;
+  case 126: code126(p); break;
+  case 127: code127(p); break;
+  case 128: code128(p); break;
+  case 129: code129(p); break;
+  case 130: code130(p); break;
+  case 131: code131(p); break;
+  case 132: code132(p); break;
+  case 133: code133(p); break;
+  case 134: code134(p); break;
+  case 135: code135(p); break;
+  case 136: code136(p); break;
+  case 137: code137(p); break;
+  case 138: code138(p); break;
+  case 139: code139(p); break;
+  case 140: code140(p); break;
+  case 141: code141(p); break;
+  case 142: code142(p); break;
+  case 143: code143(p); break;
+  case 144: code144(p); break;
+  case 145: code145(p); break;
+  case 146: code146(p); break;
+  case 147: code147(p); break;
+  case 148: code148(p); break;
+  case 149: code149(p); break;
+  case 150: code150(p); break;
+  case 151: code151(p); break;
+  case 152: code152(p); break;
+  case 153: code153(p); break;
+  case 154: code154(p); break;
+  case 155: code155(p); break;
+  case 156: code156(p); break;
+  case 157: code157(p); break;
+  case 158: code158(p); break;
+  case 159: code159(p); break;
+  case 160: code160(p); break;
+  case 161: code161(p); break;
+  case 162: code162(p); break;
+  case 163: code163(p); break;
+  case 164: code164(p); break;
+  case 165: code165(p); break;
+  case 166: code166(p); break;
+  case 167: code167(p); break;
+  case 168: code168(p); break;
+  case 169: code169(p); break;
+  case 170: code170(p); break;
+  case 171: code171(p); break;
+  case 172: code172(p); break;
+  case 173: code173(p); break;
+  case 174: code174(p); break;
+  case 175: code175(p); break;
+  case 176: code176(p); break;
+  case 177: code177(p); break;
+  case 178: code178(p); break;
+  case 179: code179(p); break;
+  case 180: code180(p); break;
+  case 181: code181(p); break;
+  case 182: code182(p); break;
+  case 183: code183(p); break;
+  case 184: code184(p); break;
+  case 185: code185(p); break;
+  case 186: code186(p); break;
+  case 187: code187(p); break;
+  case 188: code188(p); break;
+  case 189: code189(p); break;
+  case 190: code190(p); break;
+  case 191: code191(p); break;
+  case 192: code192(p); break;
+  case 193: code193(p); break;
+  case 194: code194(p); break;
+  case 195: code195(p); break;
+  case 196: code196(p); break;
+  case 197: code197(p); break;
+  case 198: code198(p); break;
+  case 199: code199(p); break;
+  case 200: code200(p); break;
+  case 201: code201(p); break;
+  case 202: code202(p); break;
+  case 203: code203(p); break;
+  case 204: code204(p); break;
+  case 205: code205(p); break;
+  case 206: code206(p); break;
+  case 207: code207(p); break;
+  case 208: code208(p); break;
+  case 209: code209(p); break;
+  case 210: code210(p); break;
+  case 211: code211(p); break;
+  case 212: code212(p); break;
+  case 213: code213(p); break;
+  case 214: code214(p); break;
+  case 215: code215(p); break;
+  case 216: code216(p); break;
+  case 217: code217(p); break;
+  case 218: code218(p); break;
+  case 219: code219(p); break;
+  case 220: code220(p); break;
+  case 221: code221(p); break;
+  case 222: code222(p); break;
+  case 223: code223(p); break;
+  case 224: code224(p); break;
+  case 225: code225(p); break;
+  case 226: code226(p); break;
+  case 227: code227(p); break;
+  case 228: code228(p); break;
+  case 229: code229(p); break;
+  case 230: code230(p); break;
+  case 231: code231(p); break;
+  case 232: code232(p); break;
+  case 233: code233(p); break;
+  case 234: code234(p); break;
+  case 235: code235(p); break;
+  case 236: code236(p); break;
+  case 237: code237(p); break;
+  case 238: code238(p); break;
+  case 239: code239(p); break;
+  case 240: code240(p); break;
+  case 241: code241(p); break;
+  case 242: code242(p); break;
+  case 243: code243(p); break;
+  case 244: code244(p); break;
+  case 245: code245(p); break;
+  case 246: code246(p); break;
+  case 247: code247(p); break;
+  case 249: code249(p); break;
+  case 262: code262(p); break;
+  case 263: code263(p); break;
+  case 264: code264(p); break;
+  case 265: code265(p); break;
+  case 266: code266(p); break;
+  case 267: code267(p); break;
+  case 268: code268(p); break;
+  case 269: code269(p); break;
+  case 270: code270(p); break;
+  case 271: code271(p); break;
+  case 272: code272(p); break;
+  case 273: code273(p); break;
+  case 274: code274(p); break;
+  case 275: code275(p); break;
+  case 276: code276(p); break;
+  case 277: code277(p); break;
+  case 278: code278(p); break;
+  case 279: code279(p); break;
+  case 280: code280(p); break;
+  case 281: code281(p); break;
+  case 282: code282(p); break;
+  case 283: code283(p); break;
+  case 284: code284(p); break;
+  case 285: code285(p); break;
+  case 286: code286(p); break;
+  case 287: code287(p); break;
+  case 288: code288(p); break;
+  case 289: code289(p); break;
+  case 290: code290(p); break;
+  case 291: code291(p); break;
+  case 292: code292(p); break;
+  case 293: code293(p); break;
+  case 294: code294(p); break;
+  case 295: code295(p); break;
+  case 296: code296(p); break;
+  case 297: code297(p); break;
+  case 298: code298(p); break;
+  case 299: code299(p); break;
+  case 300: code300(p); break;
+  case 301: code301(p); break;
+  case 302: code302(p); break;
+  case 303: code303(p); break;
+  case 304: code304(p); break;
+  case 305: code305(p); break;
+  case 306: code306(p); break;
+  case 307: code307(p); break;
+  case 308: code308(p); break;
+  case 309: code309(p); break;
+  case 310: code310(p); break;
+  case 311: code311(p); break;
+  case 312: code312(p); break;
+  case 313: code313(p); break;
+  case 314: code314(p); break;
+  case 315: code315(p); break;
+  case 316: code316(p); break;
+  case 317: code317(p); break;
+  case 318: code318(p); break;
+  case 319: code319(p); break;
+  case 320: code320(p); break;
+  case 321: code321(p); break;
+  case 322: code322(p); break;
+  case 323: code323(p); break;
+  case 324: code324(p); break;
+  case 325: code325(p); break;
+  case 326: code326(p); break;
+  case 327: code327(p); break;
+  case 328: code328(p); break;
+  case 329: code329(p); break;
+  case 330: code330(p); break;
+  case 331: code331(p); break;
+  case 332: code332(p); break;
+  case 333: code333(p); break;
+  case 334: code334(p); break;
+  case 335: code335(p); break;
+  case 336: code336(p); break;
+  case 337: code337(p); break;
+  case 338: code338(p); break;
+  case 339: code339(p); break;
+  case 340: code340(p); break;
+  case 341: code341(p); break;
+  case 342: code342(p); break;
+  case 343: code343(p); break;
+  case 344: code344(p); break;
+  case 345: code345(p); break;
+  case 346: code346(p); break;
+  case 347: code347(p); break;
+  case 348: code348(p); break;
+  case 349: code349(p); break;
+  case 350: code350(p); break;
+  case 351: code351(p); break;
+  case 352: code352(p); break;
+  case 353: code353(p); break;
+  case 354: code354(p); break;
+  case 355: code355(p); break;
+  case 356: code356(p); break;
+  case 357: code357(p); break;
+  case 358: code358(p); break;
+  case 359: code359(p); break;
+  case 360: code360(p); break;
+  case 361: code361(p); break;
+  case 362: code362(p); break;
+  case 363: code363(p); break;
+  case 364: code364(p); break;
+  case 365: code365(p); break;
+  case 366: code366(p); break;
+  case 367: code367(p); break;
+  case 368: code368(p); break;
+  case 369: code369(p); break;
+  case 370: code370(p); break;
+  case 371: code371(p); break;
+  case 372: code372(p); break;
+  case 373: code373(p); break;
+  case 374: code374(p); break;
+  case 375: code375(p); break;
+  case 376: code376(p); break;
+  case 377: code377(p); break;
+  case 378: code378(p); break;
+  case 379: code379(p); break;
+  case 380: code380(p); break;
+  case 381: code381(p); break;
+  case 382: code382(p); break;
+  case 383: code383(p); break;
+  case 384: code384(p); break;
+  case 385: code385(p); break;
+  case 386: code386(p); break;
+  case 387: code387(p); break;
+  case 388: code388(p); break;
+  case 389: code389(p); break;
+  case 390: code390(p); break;
+  case 391: code391(p); break;
+  case 392: code392(p); break;
+  case 393: code393(p); break;
+  case 394: code394(p); break;
+  case 395: code395(p); break;
+  case 396: code396(p); break;
+  case 397: code397(p); break;
+  case 398: code398(p); break;
+  case 399: code399(p); break;
+  case 400: code400(p); break;
+  case 401: code401(p); break;
+  case 402: code402(p); break;
+  case 403: code403(p); break;
+  case 404: code404(p); break;
+  case 405: code405(p); break;
+  case 406: code406(p); break;
+  case 407: code407(p); break;
+  case 408: code408(p); break;
+  case 409: code409(p); break;
+  case 410: code410(p); break;
+  case 411: code411(p); break;
+  case 412: code412(p); break;
+  case 413: code413(p); break;
+  case 414: code414(p); break;
+  case 415: code415(p); break;
+  case 416: code416(p); break;
+  case 417: code417(p); break;
+  case 418: code418(p); break;
+  case 419: code419(p); break;
+  case 420: code420(p); break;
+  case 421: code421(p); break;
+  case 422: code422(p); break;
+  case 423: code423(p); break;
+  case 424: code424(p); break;
+  case 425: code425(p); break;
+  case 426: code426(p); break;
+  default:
+    throw new OPT_OptimizingCompilerException("BURS","rule without emit code:",OPT_BURS_Debug.string[ruleno]);
+  }
+}
+}

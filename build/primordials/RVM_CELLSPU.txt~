@@ -1,0 +1,28 @@
+#  This file is part of the Jikes RVM project (http://jikesrvm.org).
+#
+#  This file is licensed to You under the Common Public License (CPL);
+#  You may not use this file except in compliance with the License. You
+#  may obtain a copy of the License at
+#
+#      http://www.opensource.org/licenses/cpl1.0.php
+#
+#  See the COPYRIGHT.txt file distributed with this work for information
+#  regarding copyright ownership.
+#
+[Lorg/jikesrvm/SubordinateArchitecture$VM_CodeArray;
+
+[Lorg/jikesrvm/cellspu/VM_Code;
+[Lorg/jikesrvm/cellspu/VM_CodeArray;
+Lorg/jikesrvm/cellspu/VM_CodeArray;
+[Lorg/jikesrvm/SubordinateArchitecture$VM_CodeArray;
+Lorg/jikesrvm/SubordinateArchitecture$VM_CodeArray;
+Lorg/jikesrvm/SubordinateArchitecture$VM_Compiler;
+Lorg/jikesrvm/SubordinateArchitecture$VM_Assembler;
+Lorg/jikesrvm/SubordinateArchitecture$VM_MachineCode;
+
+Lorg/jikesrvm/SubordinateArchitecture$VM_SubArchBootRecord;
+
+Lorg/jikesrvm/SubordinateArchitecture$VM_OutOfLineMachineCode;
+Lorg/jikesrvm/cellspu/VM_OutOfLineMachineCode;
+
+Lorg/jikesrvm/annotations/RunOnSubArch;
